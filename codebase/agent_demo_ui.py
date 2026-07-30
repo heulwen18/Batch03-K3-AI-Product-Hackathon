@@ -37,7 +37,7 @@ st.caption(
 
 with st.sidebar:
     st.header("Cấu hình")
-    api_key_input = st.text_input("GROQ_API_KEY (bỏ trống nếu đã có trong codebase/.env)", type="password")
+    st.caption("GROQ_API_KEY đọc từ `codebase/.env` trên server — không nhập khoá trên giao diện để tránh lộ khoá.")
     page_input = st.text_input("Trang đang xem (tuỳ chọn — mô phỏng bôi đen slide)", placeholder="vd 45")
     if st.button("🔄 Bắt đầu hội thoại mới", use_container_width=True):
         st.session_state["agent_history"] = []
@@ -67,13 +67,9 @@ if user_q:
         try:
             answer, tool_log, new_history = run_turn(
                 transcript_idx, st.session_state["agent_history"], formatted,
-                api_key=api_key_input or None,
             )
         except Exception as e:
-            st.error(
-                f"Lỗi khi gọi Agent A: {e}\n\n"
-                "Cần GROQ_API_KEY hợp lệ (nhập ở sidebar hoặc đặt trong codebase/.env)."
-            )
+            st.error(f"Lỗi khi gọi Agent A: {e}\n\nCần GROQ_API_KEY hợp lệ trong codebase/.env.")
             st.stop()
 
     st.session_state["agent_history"] = new_history
@@ -115,7 +111,7 @@ if demo_turns:
                 try:
                     payload, result = classify_day(
                         "DEMO", demo_report, transcript_idx,
-                        api_key=api_key_input or None, dry_run=dry,
+                        dry_run=dry,
                     )
                     st.session_state["last_classify"] = (payload, result, dry)
                 except Exception as e:

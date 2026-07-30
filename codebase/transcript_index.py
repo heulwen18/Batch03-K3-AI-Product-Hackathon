@@ -1,12 +1,24 @@
-"""Index đơn giản (keyword overlap, không cần embedding) trên 700 đoạn transcript.
+"""Index đơn giản (không cần embedding) trên 700 đoạn transcript.
 
 Dùng để: (a) kiểm tra 1 khái niệm có được giảng tường minh không,
          (b) đính kèm đoạn transcript liên quan làm bằng chứng cho Khối 2.
 Không gọi AI — thuần rule-based, kiểm lại được bằng tay.
+
+Xếp hạng bằng BM25 (tự cài, thuần Python, không thêm dependency): từ hiếm/đặc trưng
+("transformer", "react") được ưu tiên hơn từ phổ biến — chính xác hơn hẳn đếm từ trùng thô.
+`match_ratio` (tỷ lệ từ khoá của câu hỏi xuất hiện trong đoạn) vẫn được TRẢ VỀ NGUYÊN NGHĨA CŨ
+vì Khối 2 (RETRIEVAL_BUG_THRESHOLD) và prompt Agent A đang dựa vào thang 0-1 này — BM25 chỉ
+quyết định THỨ TỰ kết quả, không đổi ngưỡng nào ở downstream.
 """
 import re
 import glob
+import math
+import collections
 import unicodedata
+
+# Tham số BM25 chuẩn (Robertson) — không tự chế số, kiểm lại được với mọi tài liệu IR.
+BM25_K1 = 1.5
+BM25_B = 0.75
 
 PARA_RE = re.compile(r'\*\*\[(T\d\d-\d\d\d)\]\*\*\s*(.+?)(?=\n\n|\Z)', re.S)
 
@@ -39,22 +51,44 @@ def keywords(text, min_len=3):
 
 
 def search(query, index, k=3):
-    """Trả top-k đoạn khớp nhiều từ khoá nhất với query (không dấu, đã lọc stopword)."""
+    """Trả top-k đoạn liên quan nhất với query (không dấu, đã lọc stopword).
+
+    Thứ tự = điểm BM25 (từ hiếm được trọng số cao hơn). match_ratio giữ nguyên nghĩa cũ:
+    tỷ lệ từ khoá của query có mặt trong đoạn (0-1) — downstream không cần đổi gì.
+    """
     q_kw = keywords(query)
     if len(q_kw) < 2:
         return []
+
+    doc_tokens = [collections.Counter(norm_body.split()) for _, norm_body, _ in index]
+    n_docs = len(index)
+    if n_docs == 0:
+        return []
+    avg_len = sum(sum(c.values()) for c in doc_tokens) / n_docs
+
+    # document frequency chỉ cho từ trong query — 1 lượt duyệt, O(n_docs) mỗi lần search
+    df = {t: sum(1 for c in doc_tokens if t in c) for t in q_kw}
+    idf = {t: math.log((n_docs - df[t] + 0.5) / (df[t] + 0.5) + 1) for t in q_kw}
+
     scored = []
-    for code, norm_body, orig_body in index:
-        body_kw = set(norm_body.split())
-        overlap = len(q_kw & body_kw)
-        if overlap:
-            scored.append({
-                'code': code,
-                'match_ratio': overlap / len(q_kw),
-                'overlap_count': overlap,
-                'excerpt': orig_body[:220],
-            })
-    scored.sort(key=lambda x: (x['match_ratio'], x['overlap_count']), reverse=True)
+    for (code, _, orig_body), counts in zip(index, doc_tokens):
+        overlap = sum(1 for t in q_kw if t in counts)
+        if not overlap:
+            continue
+        doc_len = sum(counts.values())
+        bm25 = sum(
+            idf[t] * counts[t] * (BM25_K1 + 1)
+            / (counts[t] + BM25_K1 * (1 - BM25_B + BM25_B * doc_len / max(avg_len, 1)))
+            for t in q_kw if t in counts
+        )
+        scored.append({
+            'code': code,
+            'match_ratio': overlap / len(q_kw),
+            'overlap_count': overlap,
+            'bm25_score': round(bm25, 3),
+            'excerpt': orig_body[:220],
+        })
+    scored.sort(key=lambda x: x['bm25_score'], reverse=True)
     return scored[:k]
 
 

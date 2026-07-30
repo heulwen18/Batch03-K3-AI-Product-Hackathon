@@ -46,6 +46,7 @@ def build_turns(rows):
             'turn_id': turn_id,
             'conversation_id': s['conversation_id'],
             'user_id': s['user_id'],
+            'day_code': s['day_code'],
             'vn_time': to_vn_datetime(s['message_created_at']),
             'page': page,
             'selection': selection,

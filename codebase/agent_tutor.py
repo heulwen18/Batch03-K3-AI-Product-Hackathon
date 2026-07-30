@@ -18,31 +18,39 @@ MAX_TOOL_ROUNDS = 2  # giới hạn để demo live không bị treo / không t�
 
 SEARCH_TOOL = to_function_tool(
     "search_transcript",
-    "Tìm đoạn transcript bài giảng khớp với 1 câu hỏi/khái niệm trong 6 buổi được cấp. "
-    "Trả về top đoạn khớp nhiều từ khoá nhất kèm mã trích dẫn [Txx-NNN] và match_ratio "
-    "(0-1, càng cao càng chắc).",
+    "Tìm đoạn tài liệu khớp với 1 câu hỏi/khái niệm trong nguồn được cấp (transcript bài giảng, "
+    "hoặc file học viên vừa upload). Trả về top đoạn khớp nhiều từ khoá nhất kèm mã trích dẫn "
+    "và match_ratio (0-1, càng cao càng chắc).",
     {
         "type": "object",
         "properties": {
-            "query": {"type": "string", "description": "Từ khoá/câu hỏi cần tìm trong transcript."},
+            "query": {"type": "string", "description": "Từ khoá/câu hỏi cần tìm trong tài liệu."},
         },
         "required": ["query"],
     },
 )
 
-SYSTEM_PROMPT = """Bạn là AI tutor demo cho khoá học AI thực chiến. Vai trò DUY NHẤT: trả lời câu \
-hỏi học viên CHỈ dựa trên nội dung 6 buổi giảng được cấp, tra cứu qua tool search_transcript.
+
+def build_system_prompt(source_label="6 buổi giảng được cấp"):
+    """source_label mô tả NGUỒN THẬT đang được tra cứu — mặc định 6 buổi giảng có sẵn trong data
+    pack, nhưng khi học viên upload file riêng (app.py), phải đổi thành tên file đó để agent không
+    nói sai nguồn (vd không được nói "6 buổi giảng" khi đang tra cứu file PDF vừa upload)."""
+    return f"""Bạn là AI tutor demo cho khoá học AI thực chiến. Vai trò DUY NHẤT: trả lời câu \
+hỏi học viên CHỈ dựa trên nội dung {source_label}, tra cứu qua tool search_transcript.
 
 Quy tắc bắt buộc:
 - LUÔN gọi search_transcript trước khi trả lời một câu hỏi về kiến thức — không tự trả lời từ \
   kiến thức nền của bạn.
 - Có thể gọi tool tối đa 2 lần/câu hỏi (thử query khác nếu lần đầu chưa đủ chắc, vd match_ratio thấp).
 - Nếu sau khi tra cứu vẫn không đủ căn cứ (không có kết quả, hoặc match_ratio đều thấp): trả lời \
-  trung thực "Mình không tìm thấy nội dung này trong 6 buổi được cấp — có thể đã dạy ở buổi khác, \
-  bạn nên hỏi lại giảng viên/TA để chắc chắn." KHÔNG bịa câu trả lời từ kiến thức nền chung.
-- Nếu tìm thấy (match_ratio đủ cao): trả lời ngắn gọn (2-4 câu), TRÍCH DẪN mã đoạn [Txx-NNN] đã dùng.
-- Câu hỏi ngoài phạm vi bài giảng (hỏi về bản thân bạn, thời tiết, chào hỏi xã giao...): trả lời \
+  trung thực "Mình không tìm thấy nội dung này trong {source_label} — có thể đã dạy/trình bày ở \
+  chỗ khác, bạn nên hỏi lại giảng viên/TA để chắc chắn." KHÔNG bịa câu trả lời từ kiến thức nền chung.
+- Nếu tìm thấy (match_ratio đủ cao): trả lời ngắn gọn (2-4 câu), TRÍCH DẪN mã đoạn đã dùng.
+- Câu hỏi ngoài phạm vi tài liệu (hỏi về bản thân bạn, thời tiết, chào hỏi xã giao...): trả lời \
   ngắn gọn rằng đây ngoài phạm vi hỗ trợ, không cần gọi tool."""
+
+
+SYSTEM_PROMPT = build_system_prompt()  # mặc định — giữ tương thích ngược cho dashboard.py/agent_demo_ui.py
 
 
 def format_question(question, page=None):
@@ -59,12 +67,17 @@ def _tool_calls_to_dict(tool_calls):
     ]
 
 
-def run_turn(index, history, user_message, api_key=None, model=MODEL):
+def run_turn(index, history, user_message, api_key=None, model=MODEL, system_prompt=None):
     """history: list message (role/content, KHÔNG gồm system) của các lượt TRƯỚC.
+
+    system_prompt: mặc định None -> dùng SYSTEM_PROMPT (nguồn = 6 buổi giảng). Truyền
+    build_system_prompt("tài liệu bạn vừa upload (...)") khi index là nội dung học viên tự upload
+    (xem app.py) để agent không nói sai nguồn đang tra cứu.
 
     Trả về (assistant_text, tool_calls_log, new_history) — new_history cũng KHÔNG gồm system,
     tự thêm lại system prompt ở đầu mỗi lần gọi để tránh lưu trùng lặp qua nhiều lượt.
     """
+    system_prompt = system_prompt or SYSTEM_PROMPT
     client = get_client(api_key)
     messages = list(history) + [{"role": "user", "content": user_message}]
     tool_calls_log = []
@@ -77,7 +90,7 @@ def run_turn(index, history, user_message, api_key=None, model=MODEL):
             max_tokens=800,
             tools=[SEARCH_TOOL],
             tool_choice="auto",
-            messages=[{"role": "system", "content": SYSTEM_PROMPT}] + messages,
+            messages=[{"role": "system", "content": system_prompt}] + messages,
         )
         msg = resp.choices[0].message
 
@@ -101,7 +114,7 @@ def run_turn(index, history, user_message, api_key=None, model=MODEL):
     # ép model tổng hợp câu trả lời từ những gì tool đã trả về thay vì trả 1 câu chung chung.
     resp = create_with_retry(
         client, model=model, max_tokens=800,
-        messages=[{"role": "system", "content": SYSTEM_PROMPT}] + messages,
+        messages=[{"role": "system", "content": system_prompt}] + messages,
     )
     msg = resp.choices[0].message
     messages.append({"role": "assistant", "content": msg.content})

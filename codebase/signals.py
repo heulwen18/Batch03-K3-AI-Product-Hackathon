@@ -23,6 +23,13 @@ FAIL_RE = re.compile(
 # Câu hỏi về chính con AI / meta, ngoài phạm vi bài giảng — ví dụ canvas: "Bạn là model nào?"
 META_RE = re.compile(r'(bạn là (model|ai) nào|bạn tên là gì|bạn là ai|thời tiết)', re.I)
 
+# Học viên tự nói ra mình đang bối rối — tín hiệu BỔ SUNG cho learning_difficulty, không phải
+# tín hiệu chính (spec.md §1: từ khoá cảm xúc quá hiếm ~1% mẫu, nhưng khi CÓ thì rất chắc chắn).
+CONFUSION_RE = re.compile(
+    r'(không hiểu|chưa hiểu|khó hiểu|hiểu nhầm|hiểu sai|vẫn (chưa|không) (hiểu|rõ)|'
+    r'rối quá|confused|mình bị rối|giải thích lại|nói lại)', re.I
+)
+
 REPEAT_PAGE_THRESHOLD = 3  # ngưỡng đã chốt trong spec.md §1 (dòng "Số liệu chính" #5)
 
 CATEGORIES = ('tutor_limitation', 'learning_difficulty', 'intent_drift')
@@ -86,15 +93,19 @@ def compute_conversation_signals(conv_turns):
 
     direct_answer_count = sum(1 for t in conv_turns if t['move_used'] == 'give_direct_answer')
 
+    confusion_count = sum(1 for t in conv_turns if CONFUSION_RE.search(t['question']))
+
     rating_down_quit = bool(conv_turns) and conv_turns[-1]['rating'] == 'down'
 
     per_turn_cats = [classify_turn_categories(t) for t in conv_turns]
     tutor_limitation_count = sum(1 for c in per_turn_cats if 'tutor_limitation' in c)
     intent_drift_count = sum(1 for c in per_turn_cats if 'intent_drift' in c)
 
-    # NHÓM 2 — Learning Difficulty: cần góc nhìn nhiều turn (lặp/đổi diễn đạt/ép đáp án/bỏ cuộc)
+    # NHÓM 2 — Learning Difficulty: cần góc nhìn nhiều turn (lặp/đổi diễn đạt/ép đáp án/bỏ cuộc/
+    # tự nói "không hiểu")
     learning_difficulty_flag = (
         repeated_page_flag or rephrase_flag or direct_answer_count >= 1 or rating_down_quit
+        or confusion_count >= 1
     )
 
     categories_present = set()
@@ -114,6 +125,7 @@ def compute_conversation_signals(conv_turns):
         'repeated_page_flag': repeated_page_flag,
         'rephrase_flag': rephrase_flag,
         'direct_answer_count': direct_answer_count,
+        'confusion_count': confusion_count,
         'rating_down_quit': rating_down_quit,
         'tutor_limitation_count': tutor_limitation_count,
         'intent_drift_count': intent_drift_count,

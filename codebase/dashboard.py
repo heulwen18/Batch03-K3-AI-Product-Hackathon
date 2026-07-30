@@ -48,7 +48,7 @@ with st.sidebar:
         ["Dry-run (xem payload, không tốn quota)", "Gọi AI thật"],
         index=0,
     ) == "Dry-run (xem payload, không tốn quota)"
-    api_key_input = st.text_input("GROQ_API_KEY (bỏ trống nếu đã có trong codebase/.env)", type="password")
+    st.caption("GROQ_API_KEY đọc từ `codebase/.env` trên server — không nhập khoá trên giao diện để tránh lộ khoá.")
     run_clicked = st.button("▶ Phân tích ngày này", type="primary", use_container_width=True)
     st.caption("Khối 1 (số liệu tổng quan bên dưới) luôn chạy tức thời, không cần bấm nút.")
 
@@ -88,7 +88,7 @@ if run_clicked:
         try:
             payload, result = classify_day(
                 selected_date, day_report, transcript_idx,
-                api_key=api_key_input or None, dry_run=dry_mode,
+                dry_run=dry_mode,
             )
             st.session_state["payload"] = payload
             st.session_state["result"] = result
