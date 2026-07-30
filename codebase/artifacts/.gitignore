@@ -1,0 +1,5 @@
+# Everything here is reproducible from private hackathon data. This includes
+# turn-level predictions, aggregate reports, metrics, and PhoBERT checkpoints.
+# Keep all generated artifacts out of submitted or public repositories.
+*
+!.gitignore
