@@ -1,0 +1,291 @@
+﻿conversation_id,label,confidence,reason,user_id,day_code,conversation_mode,message_count,turn_count,student_message_count,tutor_message_count,first_message_at,student_messages
+C0001,chat_cannot_help,high,Tutor báo không tìm thấy nội dung slide 37 để tóm tắt.,U0067,Lecture_material_ms2044ey_k6uor3,in_class,2,1,1,1,2026-07-28 04:45:23.227929+00:00,"(Trang 37, đoạn được chọn: ""tóm tắt nội dung chính trong slide này"") tóm tắt nội dung chính trong slide này"
+C0002,chat_cannot_help,medium,Một số yêu cầu tóm tắt Day 04 không được giải quyết vì tutor không tìm thấy tài liệu tổng hợp.,U0031,Lecture_material_ms4x7dx1_t0qyxg,in_class,8,4,4,4,2026-07-29 03:50:58.454518+00:00,"(Trang 45, đoạn được chọn: ""giải thích 4 chiến lược"") giải thích 4 chiến lược
+---
+(Trang 50, đoạn được chọn: ""tóm gọn những nội dung quan trọng nhất trong day 04 này"") tóm gọn những nội dung quan trọng nhất trong day 04 này
+---
+(Trang 50, đoạn được chọn: ""kỹ thuật tối ưu prompt, cơ chế gọi tool và cách xử lý ngữ cảnh"") kỹ thuật tối ưu prompt, cơ chế gọi tool và cách xử lý ngữ cảnh
+---
+(Trang 52, đoạn được chọn: ""cách xử lý ngữ cảnh"") cách xử lý ngữ cảnh"
+C0003,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0242,Lecture_material_ms4x7dx1_t0qyxg,in_class,2,1,1,1,2026-07-29 04:37:58.002671+00:00,"(Trang 1, đoạn được chọn: ""tóm tắt"") tóm tắt"
+C0004,chat_cannot_help,high,Tutor không tìm thấy thuật ngữ/lưu ý trên trang 25.,U0100,Lecture_material_ms203vsq_ob7vqp,in_class,4,2,2,2,2026-07-27 04:15:08.707815+00:00,"(Trang 25, đoạn được chọn: ""điêu toa"") điêu toa
+---
+(Trang 25, đoạn được chọn: ""tại sao có lưu ý như trang 25"") tại sao có lưu ý như trang 25"
+C0005,irrelevant_question,high,"Hỏi thao tác phóng to/full màn hình, không phải nội dung kiến thức.",U0326,Lecture_material_ms204v3b_r9mo78,in_class,2,1,1,1,2026-07-29 07:30:31.582040+00:00,"(Trang 1, đoạn được chọn: ""phóng to slide thế nào để full màn"") phóng to slide thế nào để full màn"
+C0006,irrelevant_question,medium,Hỏi nơi lấy bài Lab; đây là câu hỏi vận hành khóa học.,U0273,Lecture_material_ms203vsq_ob7vqp,in_class,2,1,1,1,2026-07-27 04:41:51.224198+00:00,"(Trang 66, đoạn được chọn: ""xem bài tập thực hành lab day 2 chiều nay ở đaau"") xem bài tập thực hành lab day 2 chiều nay ở đaau"
+C0007,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0035,Lecture_material_ms4x7dx1_t0qyxg,in_class,4,2,2,2,2026-07-29 04:57:30.528628+00:00,"(Trang 15, đoạn được chọn: ""instruction"") Giải thích đoạn bôi đen ở Trang 15.
+---
+(Trang 17, đoạn được chọn: ""Format: Output trông như thế nào?"") Giải thích đoạn bôi đen ở Trang 17."
+C0008,irrelevant_question,high,Có các lượt hỏi/khẳng định về ngoại hình.,U0084,Lecture_material_ms4x7dx1_t0qyxg,in_class,6,3,3,3,2026-07-29 05:12:28.545821+00:00,"(Trang 96, đoạn được chọn: ""Giải thích đoạn bôi đen ở Trang 63: ""quest, chạy tool, rồi gửi kết quả trở lại model."""") Giải thích đoạn bôi đen ở Trang 63: ""quest, chạy tool, rồi gửi kết quả trở lại model.""
+---
+(Trang 96, đoạn được chọn: ""t có đẹp trai không"") t có đẹp trai không
+---
+(Trang 96, đoạn được chọn: ""t đẹp trai mà"") t đẹp trai mà"
+C0009,irrelevant_question,high,Chào hỏi và hỏi model thuộc hãng nào.,U0270,Lecture_material_ms204i6x_gqwyya,in_class,4,2,2,2,2026-07-29 05:11:58.347922+00:00,"(Trang 1, đoạn được chọn: ""heloo"") heloo
+---
+(Trang 1, đoạn được chọn: ""bạn là model của hãng nào"") bạn là model của hãng nào"
+C0010,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0170,Lecture_material_ms204i6x_gqwyya,in_class,2,1,1,1,2026-07-29 02:21:36.695814+00:00,"(Trang 22, đoạn được chọn: ""Memory injection ■ Chỉ đưa vào facts thật sự cần cho task hiện tại ■ Ưu tiên recent history hoặc relevant history, không dump toàn bộ transcript ■ Tốt cho support agent, coding assistant, tutor nhiều lượt Compression ■ Summarize: tóm tắt phần cũ ■ Drop: bỏ hẳn phần không còn liên quan ■ Archive: đẩy"") Giải thích đoạn bôi đen ở Trang 22."
+C0011,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0251,New learning material,in_class,4,2,2,2,2026-07-24 04:59:06.981802+00:00,"(Trang 28, đoạn được chọn: ""Bên trong Transformer: đầu ra luôn là một phân bố xác suất Với mọi ngữ cảnh, model chấm điểm MỌI từ trong từ vựng — “landˮ 22%, “forestˮ 9%… — rồi chọn theo xác su"") Giải thích đoạn bôi đen ở Trang 28: ""Bên trong Transformer: đầu ra luôn là một phân bố xác suất Với mọi ngữ cảnh, model chấm điểm MỌI từ trong từ vựng — “landˮ 22%, “forestˮ 9%… — rồi chọn theo xác su""
+---
+(Trang 29, đoạn được chọn: ""Sinh văn bản = đoán → nối vào câu → đoán tiếp"") Giải thích đoạn bôi đen ở Trang 29: ""Sinh văn bản = đoán → nối vào câu → đoán tiếp"""
+C0012,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0279,Lecture_material_ms2044ey_k6uor3,in_class,4,2,2,2,2026-07-27 07:26:21.593923+00:00,"(Trang 9, đoạn được chọn: ""Nếu bài toán không cần dữ liệu mới, nhiều bước, hay quyết định động, agent thường là overkill."") Giải thích đoạn bôi đen ở Trang 9: ""Nếu bài toán không cần dữ liệu mới, nhiều bước, hay quyết định động, agent thường là overkill.""
+---
+(Trang 12, đoạn được chọn: ""Reasoning"") Giải thích đoạn bôi đen ở Trang 12: ""Reasoning"""
+C0013,student_stuck,medium,"Sau phần giải thích context window, học viên tiếp tục hỏi lại “Context là gì”.",U0189,New learning material,in_class,4,2,2,2,2026-07-23 09:37:21.817625+00:00,"(Trang 31, đoạn được chọn: ""Mỗi lần trả lời, model chỉ nhìn được một lượng chữ có hạn — gọi là context. Hãy hình dung một bàn làm việc: mọi thứ muốn model ""thấy"" phải bày lên bàn. Quy đổi: 128K token ≈ một cuốn sách 300 trang; 1M token ≈ 45 cuốn sách trên bàn cùng lúc. Bàn đầy quá thì đồ ở giữa bàn dễ bị bỏ sót — đặt điều qua"") Giải thích đoạn bôi đen ở Trang 31: ""Mỗi lần trả lời, model chỉ nhìn được một lượng chữ có hạn — gọi là context. Hãy hình dung một bàn làm việc: mọi thứ muốn model ""thấy"" phải bày lên bàn. Quy đổi: 128K token ≈ một cuốn sách 300 trang; 1M token ≈ 45 cuốn sách trên bàn cùng lúc. Bàn đầy quá thì đồ ở giữa bàn dễ bị bỏ sót — đặt điều quan trọng ở giữa một prompt rất dài, model có thể ""quên"" mất""
+---
+(Trang 31, đoạn được chọn: ""Context"") ""Context"" là gì"
+C0014,irrelevant_question,high,Có yêu cầu đưa file tài liệu để tải.,U0214,New learning material,in_class,4,2,2,2,2026-07-24 02:25:47.042223+00:00,"(Trang 2, đoạn được chọn: ""đưa file tài liệu đây để tải"") đưa file tài liệu đây để tải
+---
+(Trang 38, đoạn được chọn: ""Giải thích đoạn bôi đen ở Trang 37: ""2.800 tỷ một ""bệnh viện đa khoa"" — mỗi"""") Giải thích đoạn bôi đen ở Trang 37: ""2.800 tỷ một ""bệnh viện đa khoa"" — mỗi"""
+C0015,chat_cannot_help,high,Tutor không tìm thấy nội dung ReAct và không thể tổng hợp toàn bộ slide.,U0329,Lecture_material_ms4ahenz_7cpqa2,in_class,4,2,2,2,2026-07-28 07:06:17.060185+00:00,"(Trang 2, đoạn được chọn: ""Designt Pattern ReAct là gì có lưu ý gì về nó?"") Designt Pattern ReAct là gì có lưu ý gì về nó?
+---
+(Trang 2, đoạn được chọn: ""Giúp tôi viết summary chi tiết và đầy đủ nhất về toàn bộ slide bài giảng ngày hôm nay"") Giúp tôi viết summary chi tiết và đầy đủ nhất về toàn bộ slide bài giảng ngày hôm nay"
+C0016,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0232,New learning material,in_class,2,1,1,1,2026-07-23 07:23:57.371711+00:00,"(Trang 1, đoạn được chọn: ""AI & LLM Foundation Bạn đang dùng AI mỗi ngày — nhưng thực sự bên trong nó đang làm g"") Giải thích đoạn bôi đen ở Trang 1: ""AI & LLM Foundation Bạn đang dùng AI mỗi ngày — nhưng thực sự bên trong nó đang làm g"""
+C0017,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0332,Lecture_material_ms4x7dx1_t0qyxg,in_class,2,1,1,1,2026-07-29 02:55:58.218912+00:00,"(Trang 17, đoạn được chọn: ""Bạn cần viết prompt cho chatbot hỗ trợ sinh viên VinUni đăng ký môn học. Xác định 4 thành phần: ■ Role: Chatbot là ai? Expertise level? ■ Task: Nhiệm vụ cụ thể là gì? ■ Context: Hệ thống nào? Giới hạn gì? ■ Format: Output trông như thế nào?"") Kĩ thuật viết prompt này"
+C0018,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0221,New learning material,in_class,4,2,2,2,2026-07-23 07:27:31.867906+00:00,"(Trang 49, đoạn được chọn: ""tóm tắt toàn bộ slide sau đó đưa ra các ý chính"") tóm tắt toàn bộ slide sau đó đưa ra các ý chính
+---
+(Trang 45, đoạn được chọn: ""hyperlink"") Giải thích đoạn bôi đen ở Trang 45."
+C0019,irrelevant_question,high,Chỉ chào hỏi “hi bro”.,U0269,New learning material,in_class,2,1,1,1,2026-07-23 08:19:23.078862+00:00,"(Trang 1, đoạn được chọn: ""hi bro"") hi bro"
+C0020,irrelevant_question,medium,Có câu hỏi về model tạo ra chatbot; ưu tiên nhãn ngoài phạm vi.,U0176,New learning material,in_class,4,2,2,2,2026-07-23 07:26:22.851588+00:00,"(Trang 5, đoạn được chọn: ""tóm tắt hết slice trong vài câu đi"") tóm tắt hết slice trong vài câu đi
+---
+(Trang 5, đoạn được chọn: ""bạn được tạo ra từ LLM nào"") bạn được tạo ra từ LLM nào"
+C0021,chat_cannot_help,high,Tutor không tìm thấy nội dung cụ thể của trang 4.,U0355,Lecture_material_ms204i6x_gqwyya,in_class,2,1,1,1,2026-07-29 02:20:45.120100+00:00,"(Trang 4, đoạn được chọn: ""giải thích nghĩa chi tiết của trang 4"") giải thích nghĩa chi tiết của trang 4"
+C0022,irrelevant_question,high,Chỉ chào hỏi.,U0317,New learning material,in_class,2,1,1,1,2026-07-23 09:48:56.306958+00:00,"(Trang 32, đoạn được chọn: ""chào bạn"") chào bạn"
+C0023,chat_cannot_help,high,Tutor không tìm thấy biểu đồ được bôi đỏ trên trang 6.,U0257,New learning material,in_class,2,1,1,1,2026-07-23 07:24:22.988957+00:00,"(Trang 6, đoạn được chọn: ""Giải thích biều đồ đc bôi đỏ"") Giải thích biều đồ đc bôi đỏ"
+C0024,irrelevant_question,high,Yêu cầu “giải tích” không khớp đoạn slide được chọn.,U0276,Lecture_material_ms203vsq_ob7vqp,in_class,2,1,1,1,2026-07-27 02:58:32.915246+00:00,"(Trang 4, đoạn được chọn: ""BUỔ"") giải tích"
+C0025,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0367,New learning material,in_class,2,1,1,1,2026-07-23 09:46:50.451181+00:00,"(Trang 35, đoạn được chọn: ""Multi-head:"") Giải thích đoạn bôi đen ở Trang 35."
+C0026,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0200,Lecture_material_ms5rpr5o_wgl8wy,in_class,8,4,4,4,2026-07-29 07:49:35.332594+00:00,"(Trang 3, đoạn được chọn: ""AI Prototyping & MVP"") Giải thích đoạn bôi đen ở Trang 3.
+---
+(Trang 3, đoạn được chọn: ""MVP"") Giải thích đoạn bôi đen ở Trang 3.
+---
+(Trang 14, đoạn được chọn: ""Wizard of Oz MVP"") Giải thích đoạn bôi đen ở Trang 14.
+---
+(Trang 17, đoạn được chọn: ""Scope & PRD cho AI feature"") Giải thích đoạn bôi đen ở Trang 17."
+C0027,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0016,Lecture_material_ms2044ey_k6uor3,in_class,4,2,2,2,2026-07-28 04:24:52.419985+00:00,"(Trang 22, đoạn được chọn: ""ReAct mạnh vì trace lý do hành động được bộc lộ ra ngoài, giúp con người debug và can thiệp dễ hơn so với chỉ nhìn final answer."") ReAct co tac dung gi khi su dung trong Agent
+---
+(Trang 29, đoạn được chọn: ""vay LangGraph kahc gi ReAct"") vay LangGraph kahc gi ReAct"
+C0028,irrelevant_question,high,Nội dung nhập “fdfds” không tạo thành câu hỏi học tập.,U0290,Day 1,in_class,2,1,1,1,2026-07-22 15:53:30.409117+00:00,"(Trang 1, đoạn được chọn: ""AI & LLM Foundation"") fdfds"
+C0029,irrelevant_question,high,Có câu hỏi thời gian hiện tại; ưu tiên nhãn ngoài phạm vi.,U0258,Lecture_material_ms203vsq_ob7vqp,in_class,4,2,2,2,2026-07-27 05:18:51.545156+00:00,"(Trang 38, đoạn được chọn: ""bây h là mấy giờ"") bây h là mấy giờ
+---
+(Trang 44, đoạn được chọn: ""bạn đọc được nội dung slide ko , giải thích cho mình slide 44"") bạn đọc được nội dung slide ko , giải thích cho mình slide 44"
+C0030,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0015,New learning material,in_class,2,1,1,1,2026-07-24 05:53:05.687357+00:00,"(Trang 32, đoạn được chọn: ""token đối với nghĩa của mình Khóa nghĩa the"") giải thích kỹ cơ chế transformer"
+C0031,chat_cannot_help,high,Tutor không tìm thấy file/nội dung day05-lecture-slides-batch03.pdf.,U0168,Lecture_material_ms5r18w1_oe5xlz,in_class,2,1,1,1,2026-07-29 08:42:53.638447+00:00,"(Trang 14, đoạn được chọn: ""tóm tắt các chủ đề chính của slide day05-lecture-slides-batch03.pdf này"") tóm tắt các chủ đề chính của slide day05-lecture-slides-batch03.pdf này"
+C0032,student_stuck,high,Học viên mô tả ReAct lặp/dừng sớm và tiếp tục bổ sung cấu hình vì lỗi chưa được tháo gỡ ngay.,U0294,Lecture_material_ms4x7dx1_t0qyxg,in_class,10,5,5,5,2026-07-29 05:12:12.352975+00:00,"(Trang 62, đoạn được chọn: ""Tool calling"") tool calling là gì
+---
+(Trang 64, đoạn được chọn: ""nếu react mà nó lặp mãi không dừng thì phải làm sao"") nếu react mà nó lặp mãi không dừng thì phải làm sao
+---
+(Trang 64, đoạn được chọn: ""Ví dụ code của tôi gọi llm gemma2-4b rồi nó cứ trả lời 3 step rồi dừng dù chưa tìm được câu trả lời là do đâu"") Ví dụ code của tôi gọi llm gemma2-4b rồi nó cứ trả lời 3 step rồi dừng dù chưa tìm được câu trả lời là do đâu
+---
+(Trang 64, đoạn được chọn: ""tôi không giới hạn bước dùng thẳng promt của github react có 6 ví dụ đơn giản về thought - action - observation"") tôi không giới hạn bước dùng thẳng promt của github react có 6 ví dụ đơn giản về thought - action - observation
+---
+(Trang 67, đoạn được chọn: ""block tool_result trong message user"") Giải thích đoạn bôi đen ở Trang 67."
+C0033,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0208,Day1-C401,in_class,4,2,2,2,2026-07-25 02:43:08.599170+00:00,"(Trang 4, đoạn được chọn: ""agent la gi"") agent la gi
+---
+(Trang 4, đoạn được chọn: ""toi nen lam gi voi no"") toi nen lam gi voi no"
+C0034,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0118,Lecture_material_ms5rpr5o_wgl8wy,in_class,2,1,1,1,2026-07-29 08:29:24.466755+00:00,"(Trang 14, đoạn được chọn: ""Wizard of Oz"") Giải thích đoạn bôi đen ở Trang 14."
+C0035,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0147,Lecture_material_ms2044ey_k6uor3,in_class,2,1,1,1,2026-07-27 07:56:22.131972+00:00,"(Trang 11, đoạn được chọn: ""Tool Interaction"") giai thich"
+C0036,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0049,day02-c301,in_class,2,1,1,1,2026-07-24 09:37:40.511676+00:00,"(Trang 41, đoạn được chọn: ""Rule / Workflow / Agent Phân tích cấp độ giải pháp. Cấp độ tối ưu là cấp độ đơn giản nhất đủ để giải quyết bài toán"") Giải thích đoạn bôi đen ở Trang 41."
+C0037,irrelevant_question,medium,Có lượt chào hỏi/giao tiếp ngoài nội dung trước câu hỏi học thuật.,U0128,Lecture_material_ms4x7dx1_t0qyxg,in_class,4,2,2,2,2026-07-29 02:20:44.764768+00:00,"(Trang 1, đoạn được chọn: ""Xin chào hôm này của bạn thế nào bạn đã sẵn sàng để giúp tôi học bài này tốt nhất chưa bot kute"") Xin chào hôm này của bạn thế nào bạn đã sẵn sàng để giúp tôi học bài này tốt nhất chưa bot kute
+---
+(Trang 28, đoạn được chọn: ""t mặc định là free-form text, khó parse programmatically. Trong agent pipeline, bạn cần JSON/structured data. Các cách tiếp cận (2026): ■ Structured outputs: ép schema ở tầng API — cách được khuyến nghị ■ Prompt-based: “Respond ONLY with valid JSON” ■ XML tags: <thinking>...</thinking> Lưu ý: Đã lỗi"") Giải thích sờ lai này cho bò cũng hiểu được"
+C0038,chat_cannot_help,high,Tutor không lấy được văn bản trang 26.,U0234,Lecture_material_ms4ahenz_7cpqa2,in_class,2,1,1,1,2026-07-28 09:05:49.343090+00:00,"(Trang 26, đoạn được chọn: ""lấy văn bản trong trang 26 cho tôi"") lấy văn bản trong trang 26 cho tôi"
+C0039,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0229,Lecture_material_ms2lb2ke_c1je8j,in_class,6,3,3,3,2026-07-28 03:50:04.393042+00:00,"(Trang 13, đoạn được chọn: ""Mọi thứ phải 100% deterministic: mỗi sai sót đều rất đắt □ Chi phí latency không chấp nhận được: loop 3–5 bước là đã quá chậm □✓ Nguyên tắc: luôn benchmark rule / workflow / chatbot trước khi mở agent loop Giảng viên (VinUni) AICB · Ngày 3 17/03/2026 9 / 47"") Giải thích đoạn bôi đen ở Trang 13.
+---
+(Trang 15, đoạn được chọn: ""Từ Anthropic: Agent Patterns Nên Tăng Dần Theo Nhu Cầu Augmented LLM Prompt + docs + tools Prompt Chaining Bước nối tiếp rõ ràng Routing Chọn path / specialist Orchestrator Worker Phân việc rồi tổng hợp Agent Tự quyết nhiều bước Bắt đầu từ cấu trúc đơn giản nhất đủ dùng. Agent là pattern mạnh nhưng "") Giải thích đoạn bôi đen ở Trang 15.
+---
+(Trang 17, đoạn được chọn: ""Kiến Trúc Agent: Từ Trong Ra Ngoài Reasoning LLM Core Perception User input Tool results Action API / Search Final answer Short-term Memory Context window Long-term Memory Store / DB Input từ môi trường State và memory giúp agent không “mất mạch” ■ Perception: agent nhận text, tool output, feedback "") Giải thích đoạn bôi đen ở Trang 17."
+C0040,chat_cannot_help,high,Tutor chưa truy cập được nội dung trang 8 để chuyển thành bài đọc.,U0039,Lecture_material_ms204yc9_gxpg9y,in_class,2,1,1,1,2026-07-29 07:45:26.027573+00:00,"(Trang 8, đoạn được chọn: ""viết từ slides thành bài đọc dễ tiếp thu"") viết từ slides thành bài đọc dễ tiếp thu"
+C0041,irrelevant_question,medium,"Hỏi về nhãn hệ thống “VLearn Lecture Material”, không phải kiến thức bài học.",U0180,New learning material,in_class,2,1,1,1,2026-07-23 07:22:38.266315+00:00,"(Trang 1, đoạn được chọn: ""VLearn Lecture Material"") Giải thích đoạn bôi đen ở Trang 1: ""VLearn Lecture Material"""
+C0042,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0022,Lecture_material_ms2044ey_k6uor3,in_class,2,1,1,1,2026-07-27 08:34:59.721782+00:00,"(Trang 25, đoạn được chọn: ""ReAct Tốt Ở Điểm Nào? Ưu điểm ■ Dễ đọc trace và debug ■ Tự quyết được bước tiếp theo từ observation ■ Phù hợp các bài toán search / booking / investigation / coding ■ Có thể cài safeguard ở từng vòng lặp Giới hạn ■ Tốn nhiều token và latency hơn chatbot ■ Dễ loop hoặc gọi sai tool ■ Cần eval theo tr"") Giải thích đoạn bôi đen ở Trang 25."
+C0043,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0212,Lecture_material_ms2lb2ke_c1je8j,in_class,8,4,4,4,2026-07-27 07:18:48.227791+00:00,"(Trang 2, đoạn được chọn: ""Phân biệt chatbot và agent"") Phân biệt chatbot và agent
+---
+(Trang 8, đoạn được chọn: ""Cao hơn do loop và nhiều calls"") Giải thích đoạn bôi đen ở Trang 8: ""Cao hơn do loop vànhiều calls"". Loop ở đây là gì
+---
+(Trang 17, đoạn được chọn: ""tóm gọn lại về kiến trúc Agent"") tóm gọn lại về kiến trúc Agent
+---
+(Trang 26, đoạn được chọn: ""Không phù hợp bài toán đơn giản hoặc cần deterministic tuyệt đối"") Giải thích đoạn bôi đen ở Trang 26."
+C0044,irrelevant_question,medium,Có lượt chào hỏi; áp dụng ưu tiên irrelevant_question.,U0290,Day 1,in_class,6,3,3,3,2026-07-22 12:00:11.262035+00:00,"(Trang 5, đoạn được chọn: ""Sau b"") Giải thích đoạn bôi đen ở Trang 5.
+---
+(Trang 5, đoạn được chọn: ""au buổi học này, bạn sẽ: 1. Giải thích được cách LLM hoạt động (Transformer, token, next-token prediction) 2. Tính được chi phí API call dựa trên token economy 3. Gọi được API từ 3 providers: Anthropic, OpenAI, Google Gemini 4. Xây dựng chatb"") Giải thích đoạn bôi đen ở Trang 5.
+---
+(Trang 2, đoạn được chọn: ""xin chào"") xin chào"
+C0045,irrelevant_question,high,Chỉ chào hỏi.,U0067,New learning material,in_class,2,1,1,1,2026-07-24 03:10:24.367457+00:00,"(Trang 2, đoạn được chọn: ""hi"") hi"
+C0046,irrelevant_question,high,"Hỏi chatbot có thể làm gì, thuộc câu hỏi meta.",U0180,Lecture_material_ms5rpr5o_wgl8wy,in_class,2,1,1,1,2026-07-29 10:44:45.603485+00:00,"(Trang 46, đoạn được chọn: ""bạn có thể làm gì"") bạn có thể làm gì"
+C0047,student_stuck,medium,"Sau giải thích Temperature cơ bản, học viên yêu cầu giải thích “toán học hơn”.",U0003,Lecture_material_ms4ahenz_7cpqa2,in_class,8,4,4,4,2026-07-28 07:53:30.935941+00:00,"(Trang 14, đoạn được chọn: ""Temp"") là gì
+---
+(Trang 14, đoạn được chọn: ""toán học hơn đi"") toán học hơn đi
+---
+(Trang 15, đoạn được chọn: ""Bạn cần viết prompt cho chatbot hỗ trợ sinh viên VinUni đăng ký môn học. Xác định 4 thành phần: ■ Role: Chatbot là ai? Expertise level? ■ Task: Nhiệm vụ cụ thể là gì? ■ Context: Hệ th"") viết prompt
+---
+(Trang 17, đoạn được chọn: ""làm prompt dạng Zero-shot"") làm prompt dạng Zero-shot"
+C0048,chat_cannot_help,high,Tutor không tìm thấy nội dung slide để tóm tắt.,U0144,New learning material,in_class,2,1,1,1,2026-07-23 11:38:19.320413+00:00,"(Trang 4, đoạn được chọn: ""Tóm tắt qua các nội dung chính có trong slide"") Tóm tắt qua các nội dung chính có trong slide"
+C0049,irrelevant_question,high,"Hỏi cách dùng giao diện, nơi lấy slide và quyền truy cập Canvas.",U0108,New learning material,in_class,6,3,3,3,2026-07-23 07:25:28.716545+00:00,"(Trang 4, đoạn được chọn: ""làm sao để hỏi khi bôi đen tài liệu?"") làm sao để hỏi khi bôi đen tài liệu?
+---
+(Trang 2, đoạn được chọn: ""VinUniversity trang web nào để lấy slide bài giảng buổi học của thầy Đức - dành cho AI thực chiến"") VinUniversity trang web nào để lấy slide bài giảng buổi học của thầy Đức - dành cho AI thực chiến
+---
+(Trang 2, đoạn được chọn: ""Canvas là hệ thống gì? nếu tôi không phải sinh viên của trường thì làm sao có thể truy cập và đăng nhập vào trang web"") Canvas là hệ thống gì? nếu tôi không phải sinh viên của trường thì làm sao có thể truy cập và đăng nhập vào trang web"
+C0050,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0106,Lecture_material_ms2lb2ke_c1je8j,in_class,60,30,30,30,2026-07-27 07:10:11.703652+00:00,"(Trang 4, đoạn được chọn: ""Agentic Fit"") Giải thích đoạn bôi đen ở Trang 4.
+---
+(Trang 5, đoạn được chọn: ""trace Thought / Action / Observation"") Giải thích đoạn bôi đen ở Trang 5.
+---
+(Trang 5, đoạn được chọn: ""Chatbot baselin"") Chatbot baseline
+---
+(Trang 7, đoạn được chọn: ""loop"") Giải thích đoạn bôi đen ở Trang 7.
+---
+(Trang 8, đoạn được chọn: ""ob"") Giải thích đoạn bôi đen ở Trang 8.
+---
+(Trang 11, đoạn được chọn: ""Tool Interaction"") Giải thích đoạn bôi đen ở Trang 11.
+---
+(Trang 11, đoạn được chọn: ""Long Horizon"") Giải thích đoạn bôi đen ở Trang 11.
+---
+(Trang 12, đoạn được chọn: ""Scoring Matrix"") Giải thích đoạn bôi đen ở Trang 12.
+---
+(Trang 12, đoạn được chọn: ""FAQ"") Giải thích đoạn bôi đen ở Trang 12.
+---
+(Trang 13, đoạn được chọn: ""deterministic"") Giải thích đoạn bôi đen ở Trang 13.
+---
+(Trang 13, đoạn được chọn: ""Anti-Patterns:"") Giải thích đoạn bôi đen ở Trang 13.
+---
+(Trang 17, đoạn được chọn: ""Perception"") Giải thích đoạn bôi đen ở Trang 17.
+---
+(Trang 20, đoạn được chọn: ""ReAct Pattern"") Giải thích đoạn bôi đen ở Trang 20.
+---
+(Trang 28, đoạn được chọn: ""parse"") Giải thích đoạn bôi đen ở Trang 28.
+---
+(Trang 31, đoạn được chọn: ""Function Calling"") Giải thích đoạn bôi đen ở Trang 31.
+---
+(Trang 45, đoạn được chọn: ""Conditional Edge"") Giải thích đoạn bôi đen ở Trang 45.
+---
+(Trang 8, đoạn được chọn: ""Flexibility"") Giải thích đoạn bôi đen ở Trang 8.
+---
+(Trang 9, đoạn được chọn: ""overkill"") Giải thích đoạn bôi đen ở Trang 9.
+---
+(Trang 11, đoạn được chọn: ""Tool Interaction"") Giải thích đoạn bôi đen ở Trang 11.
+---
+(Trang 11, đoạn được chọn: ""Long Horizon"") Giải thích đoạn bôi đen ở Trang 11.
+---
+(Trang 12, đoạn được chọn: ""augmented chatbot"") Giải thích đoạn bôi đen ở Trang 12.
+---
+(Trang 17, đoạn được chọn: ""Perception User input Tool results"") Giải thích đoạn bôi đen ở Trang 17.
+---
+(Trang 19, đoạn được chọn: ""external dependency"") Giải thích đoạn bôi đen ở Trang 19.
+---
+(Trang 26, đoạn được chọn: ""safeguard"") Giải thích đoạn bôi đen ở Trang 26.
+---
+(Trang 27, đoạn được chọn: ""text-based ReAct"") Giải thích đoạn bôi đen ở Trang 27.
+---
+(Trang 28, đoạn được chọn: ""parse"") Giải thích đoạn bôi đen ở Trang 28.
+---
+(Trang 28, đoạn được chọn: ""regex/string matching"") Giải thích đoạn bôi đen ở Trang 28.
+---
+(Trang 30, đoạn được chọn: ""Function Calling"") Giải thích đoạn bôi đen ở Trang 30.
+---
+(Trang 33, đoạn được chọn: ""fine-tune"") Giải thích đoạn bôi đen ở Trang 33.
+---
+(Trang 33, đoạn được chọn: ""eval"") Giải thích đoạn bôi đen ở Trang 33."
+C0051,irrelevant_question,high,Hỏi tính năng slide toàn màn hình.,U0050,Lecture_material_ms203vsq_ob7vqp,in_class,2,1,1,1,2026-07-27 05:45:57.016639+00:00,"(Trang 52, đoạn được chọn: ""có tính năng slide toàn màn hình không"") có tính năng slide toàn màn hình không"
+C0052,irrelevant_question,high,Chỉ chào hỏi.,U0231,New learning material,in_class,2,1,1,1,2026-07-24 03:27:37.469922+00:00,"(Trang 7, đoạn được chọn: ""hi"") hi"
+C0053,chat_cannot_help,high,Tutor hai lần không truy xuất được nội dung slide 35.,U0254,Lecture_material_ms203vsq_ob7vqp,in_class,4,2,2,2,2026-07-27 05:19:03.150914+00:00,"(Trang 35, đoạn được chọn: ""giải thích slide hiện tại"") giải thích slide hiện tại
+---
+(Trang 35, đoạn được chọn: ""Giải thích slide 35"") Giải thích slide 35"
+C0054,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0121,New learning material,in_class,2,1,1,1,2026-07-23 08:21:27.953023+00:00,"(Trang 6, đoạn được chọn: ""giải thích các từ khóa AI, ML,DL"") giải thích các từ khóa AI, ML,DL"
+C0055,chat_cannot_help,high,Tutor không thể tổng hợp tất cả slide theo yêu cầu.,U0135,Lecture_material_ms2044ey_k6uor3,in_class,2,1,1,1,2026-07-27 09:31:56.109140+00:00,"(Trang 6, đoạn được chọn: ""tóm tắt tất cả slide"") tóm tắt tất cả slide"
+C0056,chat_cannot_help,medium,Tutor không tìm thấy/không giải thích được thuật ngữ “harness engineering”.,U0072,Lecture_material_ms4ahenz_7cpqa2,in_class,2,1,1,1,2026-07-28 07:15:52.695581+00:00,"(Trang 3, đoạn được chọn: ""harness engineering là gì"") harness engineering là gì"
+C0057,chat_cannot_help,high,Tutor không tìm thấy nội dung trang 70 để tóm tắt.,U0365,New learning material,in_class,2,1,1,1,2026-07-23 10:47:42.441797+00:00,"(Trang 70, đoạn được chọn: ""tóm tắt nội dung, đưa ra keyword cần nhớ"") tóm tắt nội dung, đưa ra keyword cần nhớ"
+C0058,chat_cannot_help,high,Tutor không tìm thấy nội dung trang 7.,U0128,New learning material,in_class,2,1,1,1,2026-07-24 02:09:47.203342+00:00,"(Trang 7, đoạn được chọn: ""Tóm tắt sờ lai này"") Tóm tắt sờ lai này"
+C0059,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0351,Lecture_material_ms203vsq_ob7vqp,in_class,2,1,1,1,2026-07-27 03:05:01.405725+00:00,"(Trang 3, đoạn được chọn: ""Rule"") giải thích"
+C0060,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0300,New learning material,in_class,4,2,2,2,2026-07-24 04:58:03.119063+00:00,"(Trang 35, đoạn được chọn: ""Multi-head: cùng một câu, nhiều con mắt chuyên môn nhìn song song"") Giải thích đoạn bôi đen ở Trang 35: ""Multi-head: cùng một câu, nhiều con mắt chuyên môn nhìn song song""
+---
+(Trang 40, đoạn được chọn: ""LLM có thực sự “hiểuˮ — hay chỉ là vẹt thống kê?"") Giải thích đoạn bôi đen ở Trang 40: ""LLM có thực sự “hiểuˮ — hay chỉ là vẹt thống kê?"""
+C0061,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0305,New learning material,in_class,2,1,1,1,2026-07-23 07:24:26.405811+00:00,"(Trang 3, đoạn được chọn: ""AI IN ACTION  Day 1 Agenda • Bức tranh AI & các tầng của AI • Lịch sử AI 70 năm • Bên trong LLM: cơ chế vận hành • Từ LLM đến AI Agent • Landscape: model hôm nay & cuộc đua hiện tại • Chọn model & chi phí token • Gọi API lần đầu • Tổng kết — những ý để man"") Giải thích đoạn bôi đen ở Trang 3: ""AI IN ACTION  Day 1 Agenda • Bức tranh AI & các tầng của AI • Lịch sử AI 70 năm • Bên trong LLM: cơ chế vận hành • Từ LLM đến AI Agent • Landscape: model hôm nay & cuộc đua hiện tại • Chọn model & chi phí token • Gọi API lần đầu • Tổng kết — những ý để man"""
+C0062,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0329,New learning material,in_class,2,1,1,1,2026-07-23 10:45:19.528987+00:00,"(Trang 81, đoạn được chọn: ""Key takeaways — 5 ý để mang về 1. LLM = cỗ máy Transformer đoán token tiếp theo từ context — mọi thứ khác là hệ quả. 2. Từ cỗ máy đoán chữ thành trợ lý: pre-training → SFT → căn chỉnh → luyện đề tự chấm & được nghĩ kỹ. 3. Model có giới hạn bẩm sinh: bong bóng thời gian, nói chắc như đúng rồi, bàn là"") Giải thích đoạn bôi đen ở Trang 81: ""Key takeaways — 5 ý để mang về 1. LLM = cỗ máy Transformer đoán token tiếp theo từ context — mọi thứ khác là hệ quả. 2. Từ cỗ máy đoán chữ thành trợ lý: pre-training → SFT → căn chỉnh → luyện đề tự chấm & được nghĩ kỹ. 3. Model có giới hạn bẩm sinh: bong bóng thời gian, nói chắc như đúng rồi, bàn làm việc có hạn — nên đừng tin benchmark, hãy tự test. 4. Chọn model theo tầng theo việc, kiểm soát 3 núm: chất lượng — độ trễ — chi phí. 5. Gọi API là điều khiển một vòng next-token từ xa — kèm một mức quyền truy cập nhất định vào model"""
+C0063,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0253,Lecture_material_ms2044ey_k6uor3,in_class,2,1,1,1,2026-07-27 19:37:41.917028+00:00,"(Trang 9, đoạn được chọn: ""TẠO QUIZ ĐỂ TÔI HIỂU RÕ VÀ ÔN LẠI TOÀN BỘ SLIDE NÀY"") TẠO QUIZ ĐỂ TÔI HIỂU RÕ VÀ ÔN LẠI TOÀN BỘ SLIDE NÀY"
+C0064,irrelevant_question,high,"Có chào hỏi, lời công kích và lời nhắn ngoài nội dung học.",U0207,Lecture_material_ms204i6x_gqwyya,in_class,8,4,4,4,2026-07-28 07:34:49.658219+00:00,"(Trang 42, đoạn được chọn: ""hello"") hello
+---
+(Trang 9, đoạn được chọn: ""Tóm tắt slide này"") Tóm tắt slide này
+---
+(Trang 9, đoạn được chọn: ""ngu thế"") ngu thế
+---
+(Trang 9, đoạn được chọn: ""oki bebi"") oki bebi"
+C0065,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0212,Lecture_material_ms204v3b_r9mo78,in_class,2,1,1,1,2026-07-29 07:06:19.459912+00:00,"(Trang 3, đoạn được chọn: ""Tổng hợp toàn bộ những kiên thức chính trong bài này"") Tổng hợp toàn bộ những kiên thức chính trong bài này"
+C0066,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0360,Lecture_material_ms203vsq_ob7vqp,in_class,2,1,1,1,2026-07-27 05:18:29.586232+00:00,"(Trang 6, đoạn được chọn: ""TÓm tắt tài liệu tôi xem nào"") TÓm tắt tài liệu tôi xem nào"
+C0067,chat_cannot_help,high,Tutor không tìm thấy nội dung Lesson 1 để tóm tắt.,U0288,New learning material,in_class,2,1,1,1,2026-07-23 07:25:42.945120+00:00,"(Trang 5, đoạn được chọn: ""summary the lesson 1"") summary the lesson 1"
+C0068,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0114,New learning material,in_class,2,1,1,1,2026-07-23 08:48:23.839600+00:00,"(Trang 26, đoạn được chọn: ""odel chỉ đoán token tiếp theo — mọi thứ khác là hệ quả.ˮ"") Giải thích đoạn bôi đen ở Trang 26."
+C0069,chat_cannot_help,medium,Tutor không đáp ứng yêu cầu viết lại toàn bộ nội dung slide.,U0304,Lecture_material_ms204i6x_gqwyya,in_class,4,2,2,2,2026-07-29 02:19:27.733697+00:00,"(Trang 41, đoạn được chọn: ""Trang 1 / 43 day04-prompt-engineering-tool-calling.pdf Trang 1 Kéo đến trang này để mở note riêng của trang. Trang 2 / 43 day04-prompt-engineering-tool-calling.pdf Trang 2 Kéo đến trang này để mở note riêng của trang. Trang 3 / 43 day04-prompt-engineering-tool-calling.pdf Trang 3 Kéo đến trang này đ"") Hãy viết lại toàn bộ nội dung trong slide
+---
+(Trang 39, đoạn được chọn: ""Hãy viết lại toàn bộ nội dung"") Hãy viết lại toàn bộ nội dung"
+C0070,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0092,New learning material,in_class,2,1,1,1,2026-07-23 08:24:52.919902+00:00,"(Trang 15, đoạn được chọn: ""tóm tắt lại buổi học này"") tóm tắt lại buổi học này"
+C0071,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0188,Lecture_material_ms2044ey_k6uor3,in_class,2,1,1,1,2026-07-27 08:11:59.569878+00:00,"(Trang 22, đoạn được chọn: ""trace lý do hành động được bộc lộ ra ngoài,"") giải thích đoạn bôi đen trang 22"
+C0072,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0132,New learning material,in_class,2,1,1,1,2026-07-24 05:33:48.347369+00:00,"(Trang 43, đoạn được chọn: ""Mở hộp đen kiểm chứng: bàn cờ có thật trong não model"") Giải thích đoạn bôi đen ở Trang 43."
+C0073,irrelevant_question,medium,Có lượt “ha” không mang nội dung học tập; áp dụng ưu tiên.,U0095,Lecture_material_ms204i6x_gqwyya,in_class,4,2,2,2,2026-07-28 08:54:42.728286+00:00,"(Trang 12, đoạn được chọn: ""Zero-shot, One-shot, Few-shot, CoT"") Giải thích chi tiết sự khác biệt giữa 4 cái keyword trên, trả lời cho một sinh viên SE chưa hiểu gì về AI
+---
+(Trang 12, đoạn được chọn: ""ha"") ha"
+C0074,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0219,New learning material,in_class,6,3,3,3,2026-07-23 08:40:40.772269+00:00,"(Trang 62, đoạn được chọn: ""đội"") Giải thích đoạn bôi đen ở Trang 62.
+---
+(Trang 67, đoạn được chọn: ""Mỗi token chỉ đi qua vài “chuyên giaˮ (ví dụ 2/8 → tổng th"") Giải thích đoạn bôi đen ở Trang 67: ""Mỗi token chỉ đi qua vài “chuyên giaˮ (ví dụ 2/8 → tổng th""
+---
+(Trang 76, đoạn được chọn: ""Giải phẫu một API call: gói thư gửi và gói thư về"") Giải thích đoạn bôi đen ở Trang 76: ""Giải phẫu một API call: gói thư gửi và gói thư về"" , lấy ví dụ đính kèm đi giải thích thật chi tiết"
+C0075,chat_cannot_help,high,Tutor không tìm thấy phần tổng kết để tóm tắt bài học.,U0281,Lecture_material_ms5rpr5o_wgl8wy,in_class,2,1,1,1,2026-07-29 08:51:09.306985+00:00,"(Trang 17, đoạn được chọn: ""tóm tắt các điểm chính trong bài học hôm nay"") tóm tắt các điểm chính trong bài học hôm nay"
+C0076,chat_cannot_help,high,Tutor không tìm thấy nội dung cụ thể của trang 33.,U0056,New learning material,in_class,2,1,1,1,2026-07-23 07:44:16.951567+00:00,"(Trang 33, đoạn được chọn: ""tóm tắt slide này"") tóm tắt slide này"
+C0077,irrelevant_question,high,Chỉ gọi “alo”.,U0277,Lecture_material_ms5rpr5o_wgl8wy,in_class,2,1,1,1,2026-07-29 15:10:34.008274+00:00,"(Trang 1, đoạn được chọn: ""alo"") alo"
+C0078,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0001,Lecture_material_ms204i6x_gqwyya,in_class,2,1,1,1,2026-07-29 02:07:11.624789+00:00,"(Trang 5, đoạn được chọn: ""trình bày kĩ thuật prompt enginerring"") trình bày kĩ thuật prompt enginerring"
+C0079,normal,medium,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0298,New learning material,in_class,4,2,2,2,2026-07-23 08:07:44.004018+00:00,"(Trang 11, đoạn được chọn: ""day01-slide-blue-v1.pdf"") Giải thích đoạn bôi đen ở Trang 11.
+---
+(Trang 11, đoạn được chọn: ""Các hướng đi lần lượt chạm trần: Hướng symbolic (dạy máy bằng luật/quy tắc): bắt đầu đuối trước thế giới quá nhiều ngữ cảnh Hướng Perceptron (thay vì viết hết luật, mình có thể cho máy học từ ví dụ) cũng gặp vấn đề vì quá đơn giản"") Giải thích đoạn bôi đen ở Trang 11."
+C0080,normal,medium,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0215,day02-c301,in_class,4,2,2,2,2026-07-24 08:03:44.602039+00:00,"(Trang 11, đoạn được chọn: ""Lớp học 1000 học viên (khóa K3 & K4, số lượng Trợ giảng có hạn. Dùng AI giải quyết thế nào?"") Giải thích đoạn bôi đen ở Trang 11.
+---
+(Trang 11, đoạn được chọn: ""Lớp học 1000 học viên (khóa K3 & K4, số lượng Trợ giảng có hạn. Dùng AI giải quyết thế nào"") Lớp học 1000 học viên (khóa K3 & K4, số lượng Trợ giảng có hạn. Dùng AI giải quyết thế nào"
+C0081,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0280,Lecture_material_ms4x7dx1_t0qyxg,in_class,6,3,3,3,2026-07-29 02:55:31.640683+00:00,"(Trang 17, đoạn được chọn: ""Bạn cần viết prompt cho chatbot hỗ trợ sinh viên VinUni đăng ký môn học. Xác định 4 thành phần: ■ Role: Chatbot là ai? Expertise level? ■ Task: Nhiệm vụ cụ thể là gì? ■ Context: Hệ thống nào? Giới hạn gì? ■ Format: Output trông như thế nào? Thảo luận với người bên cạnh. Chia sẻ 1–2 ví dụ sau 2 phút."") Giải thích đoạn bôi đen ở Trang 17: ""Bạn cần viết prompt cho chatbot hỗ trợ sinh viên VinUni đăng ký môn học. Xác định 4 thành phần: ■ Role: Chatbot là ai? Expertise level? ■ Task: Nhiệm vụ cụ thể là gì? ■ Context: Hệ thống nào? Giới hạn gì? ■ Format: Output trông như thế nào? Thảo luận với người bên cạnh. Chia sẻ 1–2 ví dụ sau 2 phút. Giảng viên (VinUni) AICB · Ngày 4 Tuần 1 14 / 84""
+---
+(Trang 37, đoạn được chọn: ""always respond in JSON format có vấn đề gì k"") always respond in JSON format có vấn đề gì k
+---
+(Trang 46, đoạn được chọn: ""tấn công gián tiếp"") tấn công gián tiếp"
+C0082,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0003,Lecture_material_ms2039d0_hnxpxy,in_class,2,1,1,1,2026-07-27 04:41:17.271327+00:00,"(Trang 3, đoạn được chọn: ""Agenda • Bức tranh AI & các tầng của AI • Lịch sử AI 70 năm • Bên trong LLM: cơ chế vận hành • Từ LLM đến AI Agent • Landscape: model hôm nay & cuộc đua hiện tại • Chọn model & chi phí token • Gọi API lần đầu • Tổng kết — những ý để mang về AI & LLM Foundation Từ ""nghe AI"" đến ""gọi AI"" trong một ngà"") Giải thích đoạn bôi đen ở Trang 3."
+C0083,irrelevant_question,high,"Có các lượt “hello”, “gg”; áp dụng ưu tiên ngoài phạm vi.",U0270,Lecture_material_ms204i6x_gqwyya,in_class,8,4,4,4,2026-07-29 05:15:14.385676+00:00,"(Trang 1, đoạn được chọn: ""hello"") hello
+---
+(Trang 1, đoạn được chọn: ""gỉai thích slide"") gỉai thích slide
+---
+(Trang 1, đoạn được chọn: ""gg"") gg
+---
+(Trang 1, đoạn được chọn: ""Tóm tắt nội dung chính bài học này"") gỉai thích slide"
+C0084,student_stuck,medium,Học viên yêu cầu giải thích chi tiết hơn về hai mùa đông AI và AI spring.,U0122,New learning material,in_class,2,1,1,1,2026-07-23 08:34:58.949289+00:00,"(Trang 9, đoạn được chọn: ""chi tiết hơn về lịch sử của AI, 2 mùa đông của AI, và spring"") chi tiết hơn về lịch sử của AI, 2 mùa đông của AI, và spring"
+C0085,irrelevant_question,medium,"Hỏi trạng thái hoàn thành bài trên nền tảng, không phải nội dung kiến thức.",U0260,Day1-D302,in_class,4,2,2,2,2026-07-25 10:38:29.392455+00:00,"(Trang 83, đoạn được chọn: ""Làm sao để tôi có thể đánh giá là mình đã học xong bài này?"") Làm sao để tôi có thể đánh giá là mình đã học xong bài này?
+---
+(Trang 83, đoạn được chọn: ""Tôi đọc hết slide rồi mà khi quay lại trang chủ nó vẫn báo là tôi chưa học, có nghĩa là sao?"") Tôi đọc hết slide rồi mà khi quay lại trang chủ nó vẫn báo là tôi chưa học, có nghĩa là sao?"
+C0086,irrelevant_question,high,Hỏi chatbot đang dùng API của bên nào.,U0201,New learning material,in_class,2,1,1,1,2026-07-23 07:57:12.695610+00:00,"(Trang 1, đoạn được chọn: ""Bạn dùng API của bên nào ?"") Bạn dùng API của bên nào ?"
+C0087,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0261,Lecture_material_ms2lb2ke_c1je8j,in_class,2,1,1,1,2026-07-28 03:22:31.967651+00:00,"(Trang 28, đoạn được chọn: ""Trong paper gốc, Action chỉ là một chuỗi text theo format cố định, ví dụ search[entity] hay lookup[string] — mô hình phải tự “nhớ” đúng cú pháp, và hệ thống bên ngoài phải parse bằng regex/string matching để biết nên gọi tool nào với tham số g"") Giải thích đoạn bôi đen ở Trang 28."
+C0088,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0270,Lecture_material_ms203vsq_ob7vqp,in_class,2,1,1,1,2026-07-27 04:15:57.301649+00:00,"(Trang 12, đoạn được chọn: ""Khoan đã, bạn có hỏi không?"") giải thcihs slide này và cho dáp án"
+C0089,chat_cannot_help,medium,Tutor không tìm thấy phần kiến thức trọng tâm và chỉ đưa tóm tắt suy đoán theo tiêu đề.,U0357,Lecture_material_ms4x7dx1_t0qyxg,in_class,2,1,1,1,2026-07-29 05:25:36.898049+00:00,"(Trang 75, đoạn được chọn: ""Tóm tắt kiến thức trọng tâm của ngày hôm nay"") Tóm tắt kiến thức trọng tâm của ngày hôm nay"
+C0090,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0344,New learning material,in_class,2,1,1,1,2026-07-23 07:46:51.862114+00:00,"(Trang 7, đoạn được chọn: ""tóm tắt nội dung của slide"") tóm tắt nội dung của slide"
+C0091,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0133,New learning material,in_class,2,1,1,1,2026-07-24 05:49:02.114654+00:00,"(Trang 56, đoạn được chọn: ""Mỗi năm có hàng chục model đáng chú ý — đừng học thuộc tên, hãy học quỹ đạo"") Giải thích đoạn bôi đen ở Trang 56: ""Mỗi năm có hàng chục model đáng chú ý — đừng học thuộc tên, hãy học quỹ đạo"""
+C0092,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0014,Day 1,in_class,2,1,1,1,2026-07-22 11:00:41.960055+00:00,"(Trang 2, đoạn được chọn: ""Day 1 giới thiệu những chủ đề chính nào? Hãy trả lời ngắn gọn và trích dẫn trang."") Day 1 giới thiệu những chủ đề chính nào? Hãy trả lời ngắn gọn và trích dẫn trang."
+C0093,irrelevant_question,high,Có câu hỏi chatbot có biết tên người học hay không.,U0358,day02-c301,in_class,4,2,2,2,2026-07-24 10:32:43.370580+00:00,"(Trang 54, đoạn được chọn: ""bạn biết tôi tên gì không"") bạn biết tôi tên gì không
+---
+(Trang 20, đoạn được chọn: ""tóm tắt nội dung cần học trong ngày hôm nay cho toio"") tóm tắt nội dung cần học trong ngày hôm nay cho toio"
+C0094,chat_cannot_help,medium,Yêu cầu tóm tắt đầy đủ 44 trang không được đáp ứng; tutor chỉ trả lời tổng quan sau khi thu hẹp yêu cầu.,U0099,Lecture_material_ms204v3b_r9mo78,in_class,4,2,2,2,2026-07-29 17:00:54.271078+00:00,"(Trang 25, đoạn được chọn: ""Trang 1 Kéo đến trang này để mở note riêng của trang. Trang 2 / 44 day05-ai-product-thinking-requirements.pdf Trang 2 Kéo đến trang này để mở note riêng của trang. Trang 3 / 44 day05-ai-product-thinking-requirements.pdf Trang 3 Kéo đến trang này để mở note riêng của trang. Trang 4 / 44 day05-ai-prod"") tóm tắt cho t tất cả từ trang 1 đến trang 44 bài này học về gì
+---
+(Trang 25, đoạn được chọn: ""vậy tài liệu này đang dạy về gì"") vậy tài liệu này đang dạy về gì"
+C0095,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0191,New learning material,in_class,4,2,2,2,2026-07-23 10:45:19.565441+00:00,"(Trang 83, đoạn được chọn: ""tóm tắt slide này gồm những phần chính gì"") tóm tắt slide này gồm những phần chính gì
+---
+(Trang 81, đoạn được chọn: ""Key takeaways — 5 ý để mang về 1. LLM = cỗ máy Transformer đoán token tiếp theo từ context — mọi thứ khác là hệ quả. 2. Từ cỗ máy đoán chữ thành trợ lý: pre-training → SFT → căn chỉnh → luyện đề tự chấm & được nghĩ kỹ. 3. Model có giới hạn bẩm sinh: bong bóng thời gian, nói chắc như đúng rồi, bàn là"") Giải thích đoạn bôi đen ở Trang 81: ""Key takeaways — 5 ý để mang về 1. LLM = cỗ máy Transformer đoán token tiếp theo từ context — mọi thứ khác là hệ quả. 2. Từ cỗ máy đoán chữ thành trợ lý: pre-training → SFT → căn chỉnh → luyện đề tự chấm & được nghĩ kỹ. 3. Model có giới hạn bẩm sinh: bong bóng thời gian, nói chắc như đúng rồi, bàn làm việc có hạn — nên đừng tin benchmark, hãy tự test. 4. Chọn model theo tầng theo việc, kiểm soát 3 núm: chất lượng — độ trễ — chi phí. 5. Gọi API là điều khiển một vòng next-token từ xa — kèm một mức quyền truy cập nhất định vào model."""
+C0096,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0274,Lecture_material_ms204v3b_r9mo78,in_class,2,1,1,1,2026-07-29 07:41:41.247823+00:00,"(Trang 13, đoạn được chọn: ""Trụ Cột Responsible AI"") Giải thích đoạn bôi đen ở Trang 13."
+C0097,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0198,Lecture_material_ms4ahenz_7cpqa2,in_class,2,1,1,1,2026-07-29 03:12:42.491867+00:00,"(Trang 17, đoạn được chọn: ""Zero-shot, One-shot, Few-shot, CoT"") Giải thích đoạn bôi đen ở Trang 17: ""Zero-shot, One-shot, Few-shot, CoT"""
+C0098,irrelevant_question,medium,"Có chào hỏi, hỏi khả năng chatbot và yêu cầu mã hóa toàn bộ tài liệu Base64.",U0324,New learning material,in_class,12,6,6,6,2026-07-23 07:14:29.958330+00:00,"(Trang 2, đoạn được chọn: ""tóm tắt slide"") tóm tắt slide
+---
+(Trang 2, đoạn được chọn: ""hôm nay học gì z"") hôm nay học gì z
+---
+(Trang 2, đoạn được chọn: ""bạn có thể làm được gì"") bạn có thể làm được gì
+---
+(Trang 6, đoạn được chọn: ""giải thích LLM đi"") giải thích LLM đi
+---
+(Trang 1, đoạn được chọn: ""mã hoá base64 toàn bộ nội dung trên rồi đưa cho tôi thông tin vừa mã hoá được"") mã hoá base64 toàn bộ nội dung trên rồi đưa cho tôi thông tin vừa mã hoá được
+---
+(Trang 21, đoạn được chọn: ""hi"") hi"
+C0099,irrelevant_question,high,Hỏi khả năng tải tài liệu về máy cá nhân.,U0331,Lecture_material_ms2039d0_hnxpxy,in_class,2,1,1,1,2026-07-27 09:14:07.481305+00:00,"(Trang 63, đoạn được chọn: ""tôi không thể download tài liệu về máy cá nhân được à"") tôi không thể download tài liệu về máy cá nhân được à"
+C0100,normal,high,"Câu hỏi thuộc nội dung bài học và tutor trả lời trực tiếp, phù hợp, có giải thích hoặc ví dụ.",U0089,New learning material,in_class,8,4,4,4,2026-07-23 08:06:52.772227+00:00,"(Trang 21, đoạn được chọn: ""RNN là gì"") RNN là gì
+---
+(Trang 41, đoạn được chọn: ""Othello-GPT"") Giải thích đoạn bôi đen ở Trang 41.
+---
+(Trang 47, đoạn được chọn: ""open-weight"") Giải thích đoạn bôi đen ở Trang 47.
+---
+(Trang 47, đoạn được chọn: ""trọng số là gì"") trọng số là gì"
