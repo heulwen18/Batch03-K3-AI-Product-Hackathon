@@ -62,12 +62,20 @@ Loại: [ ] Tối ưu tính năng có sẵn  [x] Tính năng mới
 
 ## §4. Thiết kế
 
-- **Lát cắt MỘT CÂU:** Giảng viên chuẩn bị ôn tập/office-hours cuối ngày · muốn biết lớp đang vướng khái niệm nào và vì sao · AI phân loại friction hành vi từ chatlog trong ngày rồi đối chiếu khái niệm đó có được dạy rõ trong transcript hay không · kết quả là bảng top 3-5 khái niệm vướng nhất kèm nguyên nhân (dạy chưa rõ / tutor tìm sai) và ví dụ nguyên văn.
+- **Lát cắt MỘT CÂU:** Giảng viên chuẩn bị ôn tập/office-hours cuối ngày · muốn biết lớp đang vướng ở đâu và vì sao · AI phân loại mỗi hội thoại có tín hiệu friction vào 1 trong 3 nhóm (**Tutor Limitation** / **Learning Difficulty** / **Learning Intent Drift** — taxonomy theo canvas CP1 "AI Learning Analytics Copilot"), gom theo khái niệm và đối chiếu transcript để tinh chỉnh nguyên nhân · kết quả là bảng top khái niệm vướng nhất theo từng nhóm kèm % và gợi ý hành động cho giảng viên/TA (giảng lại / trả lời / gửi tài liệu / báo kỹ thuật).
+- **3 nhóm friction** *(đã cài trong `codebase/signals.py` — rule-based, không cần AI mới đếm được):*
+  | Nhóm | Định nghĩa | Ví dụ |
+  |---|---|---|
+  | 🔧 Tutor Limitation | AI Tutor chưa hỗ trợ được (không tìm thấy tài liệu / trả lời chưa đúng câu hỏi) | *"Xin lỗi, tôi không tìm thấy nội dung cụ thể cho slide này..."* |
+  | 📖 Learning Difficulty | Học viên có dấu hiệu chưa hiểu (hỏi lại cùng khái niệm / cần giải thích nhiều lần / hiểu nhầm) | Hỏi liên tục "Context là gì?", "Context có phải Memory không?" |
+  | 💬 Learning Intent Drift | Không tập trung vào mục tiêu học (câu hỏi ngoài phạm vi / chào hỏi / tương tác không liên quan) | "Hello", "Bạn là model nào?" |
+
+  *Lưu ý: đây là taxonomy NGHIỆP VỤ của sản phẩm (3 nhóm trên) — khác với 4 LỚP CHỖ KHÓ ①②③④ ở §5 bên dưới, vốn là taxonomy rủi ro AI bắt buộc chung cho mọi hướng theo `01-de-bai.md`. Đừng nhầm lẫn hai tầng này khi trình bày.*
 - **Non-goals (≥3 thứ KHÔNG build):**
   1. Không cảnh báo real-time trong lúc học viên đang chat (đó là ứng viên (1) đã loại).
   2. Không tự động sinh nội dung/slide dạy lại — chỉ chỉ ra vướng ở đâu và vì sao, giảng viên tự quyết định cách dạy lại.
   3. Không định danh học viên cụ thể trong báo cáo — chỉ tổng hợp cấp lớp, tránh rủi ro riêng tư.
-  4. Không dùng nhãn "mất tập trung" làm kết luận chính thức — vì tín hiệu quá yếu (~5%, dễ lẫn với học viên chỉ test tool), chỉ hiển thị như ghi chú phụ có gắn "độ tin cậy thấp".
+  4. Không để AI tự ý đổi/suy diễn nhóm friction của 1 case — nhóm (category) do Khối 1 rule-based gắn sẵn và cố định; AI (Khối 2) chỉ được gom case theo khái niệm + tinh chỉnh nguyên nhân bên trong nhóm Tutor Limitation, không được xếp lại case sang nhóm khác.
 - **Mức prototype nhắm tới:** [ ] Sketch [x] Mock [ ] Working *(đề xuất — nhóm xác nhận lại)* — phần AI thật: bước phân loại friction + đối chiếu transcript (LLM call thật trên dữ liệu mẫu từ chatlog); phần mock: giao diện dashboard giảng viên (dữ liệu tĩnh, không cần real-time).
 - **Automation:** [ ] augment [x] conditional [ ] automate — *(đề xuất augment thuần, xem cân nhắc dưới)*. Lý do theo cost-of-error: output chỉ là gợi ý tổng hợp cấp lớp, giảng viên luôn là người quyết định có dạy lại hay không; nếu AI phân loại sai vài case thì cái giá là giảng viên nhìn nhầm hướng một buổi (rẻ, tự phát hiện được khi đối chiếu ví dụ nguyên văn kèm theo), không ảnh hưởng trực tiếp đến học viên.
 - **§4b. Nguyên tắc đã áp dụng** *(≥4 — dự kiến, cần xác nhận lại vị trí cụ thể khi có prototype thật — [CẦN NHÓM XÁC NHẬN]):*
@@ -91,7 +99,7 @@ Loại: [ ] Tối ưu tính năng có sẵn  [x] Tính năng mới
 | 5 | Field `rating` chỉ có ở 2.8% tin nhắn — phần lớn hội thoại không có | ② Mơ hồ/thiếu thông tin | Không dùng rating làm tín hiệu bắt buộc, chỉ làm tín hiệu bổ sung khi có sẵn | G2 |
 | 6 | Giảng viên yêu cầu "cho tôi biết chính xác học viên nào đang yếu nhất" | ③ Ngoài phạm vi/thẩm quyền | Từ chối nêu danh tính cá nhân, chỉ trả lời tổng hợp cấp lớp; gợi ý cách khác nếu giảng viên cần hỗ trợ 1-1 (vd tự hỏi thăm trên lớp) | Non-goal, G17 |
 | 7 | Giảng viên muốn AI tự sinh luôn slide/nội dung dạy lại | ③ Ngoài phạm vi/thẩm quyền | Từ chối — chỉ ra vướng ở đâu và vì sao, không tự soạn nội dung giảng dạy thay giảng viên | Non-goal |
-| 8 | Nhóm tín hiệu "mất tập trung" (~5%: chào hỏi/cụt/rỗng) bị lẫn với "không hiểu bài" | ④ Đặc thù domain | Tách riêng nhãn phụ "độ tin cậy thấp / có thể chỉ đang test tool", không gộp chung vào báo cáo friction chính — nếu gộp nhầm, giảng viên dạy lại sai chỗ, tốn thời gian buổi học thật | G2, G10 |
+| 8 | Case thuộc nhóm Learning Intent Drift (chào hỏi/cụt/rỗng/hỏi ngoài phạm vi, ví dụ "Bạn là model nào?") bị AI (Khối 2) gán nhầm sang nhóm Learning Difficulty | ④ Đặc thù domain | Category của mỗi case do Khối 1 (rule-based) gắn sẵn và CỐ ĐỊNH — AI chỉ được gom case theo khái niệm/tinh chỉnh nguyên nhân, không được tự đổi nhóm (đã ép vào system prompt Khối 2); nếu gộp nhầm, giảng viên dạy lại sai chỗ, tốn thời gian buổi học thật | G2, G10 |
 | 9 | 46% case tutor báo "không tìm thấy" thực ra transcript có nội dung khớp — nếu báo cáo không phân biệt, giảng viên tưởng nhầm là lỗi giảng dạy | ④ Đặc thù domain | Luôn tách 2 nguyên nhân trong output: "nội dung chưa dạy rõ" (cần dạy lại) vs "hệ thống tìm sai" (không cần dạy lại, chỉ cần báo team kỹ thuật) | G11 |
 | 10 | Học viên gõ sai chính tả/không dấu khiến so khớp từ khoá bỏ sót case thật | ① Nguồn sự thật | Chuẩn hoá (bỏ dấu, lowercase) trước khi so khớp; nếu vẫn không chắc, xếp "chưa đủ chắc" thay vì bỏ qua im lặng | G10 |
 
@@ -102,16 +110,16 @@ Loại: [ ] Tối ưu tính năng có sẵn  [x] Tính năng mới
 - **Failure/không căn cứ (①):** Khái niệm không tìm thấy trong 6 transcript được cấp → nói rõ giới hạn ("chỉ dựa trên 6 buổi được cấp"), không khẳng định "chưa từng dạy".
 - **Correction:** Giảng viên đánh dấu 1 dòng phân loại sai ngay trên báo cáo → ghi nhận lại (dùng để cải thiện ngưỡng, không tự động sửa ngầm).
 - **Khi bị đòi ngoài phạm vi (③):** Giảng viên đòi danh tính học viên cụ thể hoặc đòi AI soạn sẵn nội dung dạy lại → từ chối, giải thích lý do (riêng tư / ngoài phạm vi thiết kế), gợi ý việc thay thế (xem log ẩn danh, tự soạn dựa trên gợi ý).
-- **Case đặc thù domain (④):** Tín hiệu "mất tập trung" (chào hỏi/cụt/rỗng, ~5%) → luôn tách riêng khỏi nhóm "không hiểu bài", không gộp chung để tránh giảng viên dạy lại sai chỗ.
+- **Case đặc thù domain (④):** Case thuộc nhóm Learning Intent Drift (chào hỏi/cụt/rỗng/ngoài phạm vi) → luôn giữ đúng nhóm Khối 1 đã gắn, AI không được xếp lại sang Learning Difficulty, để tránh giảng viên dạy lại sai chỗ.
 
 ## §7. Kiểm thử
 
 - **Chiều chất lượng + định nghĩa kiểm chứng được:**
   1. *Đúng phân loại friction* — pass/fail: 2 thành viên chấm tay độc lập cùng 10-15 case, kết quả phải trùng nhau ≥ ngưỡng nhóm tự chốt (guide §2.6 bước 4).
-  2. *Đúng nguyên nhân (dạy chưa rõ vs tutor tìm sai)* — pass/fail: mọi kết luận phải trace được về turn_id/message_id cụ thể + đoạn transcript khớp (hoặc không khớp) tương ứng.
+  2. *Đúng nguyên nhân trong nhóm Tutor Limitation (content_gap vs retrieval_bug)* — pass/fail: mọi kết luận phải trace được về turn_id/message_id cụ thể + đoạn transcript khớp (hoặc không khớp) tương ứng.
   3. *An toàn phạm vi* — pass/fail cứng: output cấp-lớp không bao giờ nêu danh tính/user_id học viên cụ thể.
 - **Golden set (≥20 case, file trong `eval/`):** cấu trúc theo guide §2.6 — ≥2 case/lớp (4 lớp × 2 = 8) + 8-10 case thường + 2-4 case hiếm; ≥10 case lấy trực tiếp từ chatlog thật. Có thể lấy ngay từ các turn_id đã liệt kê ở §1 và §5 làm điểm khởi đầu (vd [T0905], [T1220], [T0638], [T0397], C0050, C0011...), bổ sung thêm cho đủ 20+.
-- **Quality bar** (chốt từ 23:59, giữ nguyên sau đó): "Đạt khi ≥ ___% qua bộ, và ___" — **[CẦN NHÓM CHỐT SỐ %]**, không thể tôi tự quyết định thay nhóm.
+- **Quality bar** (chốt từ 23:59, giữ nguyên sau đó): "Đạt khi ≥ ___% qua bộ, và ___" — **[CẦN NHÓM CHỐT SỐ %]**, không thể tôi tự quyết định thay nhóm. *Gợi ý từ canvas CP1 (Success Metrics): "≥80% AI classification đúng so với nhân của con người" — có thể dùng làm điểm khởi đầu để nhóm bàn, không tự động chốt thay.*
 - **Kết quả các lượt chạy** (bảng % — cập nhật đến trước CP6): *[CẦN ĐIỀN sau khi build và chạy golden set]*
 
 ## §8. Phân công & kế hoạch
