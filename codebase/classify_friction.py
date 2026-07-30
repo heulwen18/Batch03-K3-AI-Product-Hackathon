@@ -196,6 +196,7 @@ def classify_day(date, day_report, index, api_key=None, model=MODEL, dry_run=Tru
             'root_cause': c['root_cause'],
             'cause_rationale': n['cause_rationale'] if n else '[AI không trả về tên cho cụm này — dùng dữ liệu thô]',
             'example_turn_ids': c['example_turn_ids'],
+            'example_quotes': c['example_quotes'],  # list, cùng thứ tự với example_turn_ids
             'example_quote': c['example_quotes'][0] if c['example_quotes'] else '',
             'suggested_action': n['suggested_action'] if n else '',
         })

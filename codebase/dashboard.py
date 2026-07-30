@@ -106,7 +106,7 @@ if payload is None:
 elif was_dry or result is None:
     st.warning(
         f"Đang ở chế độ **DRY-RUN** — chưa gọi AI thật (payload {len(str(payload))} ký tự, "
-        f"{len(payload['cases'])} case). Chuyển sang 'Gọi AI thật' + nhập API key để chạy thật."
+        f"{len(payload['clusters'])} cụm). Chuyển sang 'Gọi AI thật' + nhập API key để chạy thật."
     )
     with st.expander("Xem payload sẽ gửi cho model"):
         st.json(payload)
@@ -138,12 +138,9 @@ else:
                 st.markdown(f"**Ví dụ nguyên văn:** _{c['example_quote']}_")
             st.markdown(f"**Gợi ý hành động cho giảng viên/TA:** {c.get('suggested_action', '')}")
 
-            related_turn_ids = set(c.get("example_turn_ids", []))
             st.caption("Case gốc liên quan (drill-down — không hiện danh tính học viên):")
-            for case in payload["cases"]:
-                if any(t["turn_id"] in related_turn_ids for t in case["turns"]):
-                    for t in case["turns"]:
-                        st.markdown(f"- `[{t['turn_id']}]` *\"{t['question'][:150]}\"*")
+            for tid, q in zip(c.get("example_turn_ids", []), c.get("example_quotes", [])):
+                st.markdown(f"- `[{tid}]` *\"{q}\"*")
 
 st.divider()
 st.caption(
