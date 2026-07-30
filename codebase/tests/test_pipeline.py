@@ -1,5 +1,3 @@
-from collections import Counter
-
 from friction_pipeline.labels import seed_label, topic_for
 from friction_pipeline.phobert import PhoBERTTextClassifier
 from friction_pipeline.text import normalize, split_prompt, typed_question
@@ -13,11 +11,15 @@ def test_normalizes_vietnamese_and_selected_text():
 
 def test_seed_labels_are_auditable():
     base = {"student_text": "RAG là gì", "tutor_text": "RAG là retrieval", "move_used": "review_concept"}
-    assert seed_label(base) == "student_stuck"
+    assert seed_label(base) == "learning_difficulty"
     base["tutor_text"] = "Xin lỗi, tôi không tìm thấy nội dung cụ thể"
-    assert seed_label(base) == "chat_cannot_help"
+    assert seed_label(base) == "tutor_limitation"
     base["student_text"] = "hello"
-    assert seed_label(base) == "irrelevant_question"
+    assert seed_label(base) == "off_topic"
+    base["student_text"] = "Tóm tắt nội dung của slide này"
+    base["tutor_text"] = "Đây là phần tóm tắt nội dung của slide."
+    base["move_used"] = "review_concept"
+    assert seed_label(base) == "normal"
 
 
 def test_topic_detection():

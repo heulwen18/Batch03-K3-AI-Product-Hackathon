@@ -53,7 +53,7 @@ def train_and_report(csv_path, transcript_dir, output_dir, min_sample=20,
         retrieval_failure = tutor_failed(turn["tutor_text"])
         cause = "tutor_retrieval_failure" if retrieval_failure and match["score"] >= 0.18 else (
             "not_found_in_provided_transcripts" if retrieval_failure else "learner_concept_difficulty")
-        if label == "irrelevant_question": cause = "irrelevant_or_non_learning_prompt"
+        if label == "off_topic": cause = "irrelevant_or_non_learning_prompt"
         predictions.append({
             "turn_id": turn["turn_id"], "conversation_id": turn["conversation_id"],
             "date": turn["created_at"][:10], "topic": topic_for(grounding_query),
@@ -68,7 +68,7 @@ def train_and_report(csv_path, transcript_dir, output_dir, min_sample=20,
 
     grouped = defaultdict(list)
     for row in predictions:
-        if row["label"] != "irrelevant_question": grouped[row["topic"]].append(row)
+        if row["label"] not in {"off_topic", "normal"}: grouped[row["topic"]].append(row)
     summary = []
     for topic, rows in grouped.items():
         summary.append({"topic": topic, "turns": len(rows),

@@ -4,7 +4,7 @@ from collections import Counter, defaultdict
 from .text import normalize, tokens, cosine
 
 
-LABELS = ("student_stuck", "chat_cannot_help", "irrelevant_question")
+LABELS = ("learning_difficulty", "tutor_limitation", "off_topic", "normal")
 RETRIEVAL_RE = re.compile(
     r"(?:kh[oô]ng (?:th[ểe] )?t[iì]m th[ấa]y|ch[ưư]a t[iì]m th[ấa]y|"
     r"kh[oô]ng th[ấa]y|kh[oô]ng (?:th[ểe] )?truy (?:c[ậa]p|xu[ấa]t)|ch[ưư]a truy c[ậa]p|"
@@ -34,14 +34,14 @@ def tutor_failed(text):
 
 def seed_label(turn):
     question = normalize(turn["student_text"])
-    # The output contract is exclusive. Clear non-learning prompts take priority,
-    # followed by evidence that the tutor could not help; all learning turns are
-    # treated as student-stuck candidates.
+    # Off-topic prompts and tutor failures override learning-signal classification.
     if not question or IRRELEVANT_RE.search(question):
-        return "irrelevant_question"
+        return "off_topic"
     if tutor_failed(turn["tutor_text"]):
-        return "chat_cannot_help"
-    return "student_stuck"
+        return "tutor_limitation"
+    if turn.get("repeated_question") or CONFUSION_RE.search(question) or turn["move_used"] in {"give_direct_answer", "give_hint"}:
+        return "learning_difficulty"
+    return "normal"
 
 
 def topic_for(text):
