@@ -1,6 +1,7 @@
 from friction_pipeline.labels import seed_label, topic_for
 from friction_pipeline.phobert import PhoBERTTextClassifier
 from friction_pipeline.text import normalize, split_prompt, typed_question
+from train_human import stratified_conversation_split
 
 
 def test_normalizes_vietnamese_and_selected_text():
@@ -34,3 +35,16 @@ def test_phobert_input_contains_all_turn_parts():
     assert "Câu hỏi học viên: Agent là gì?" in text
     assert "Đoạn được chọn: Agent dùng tool" in text
     assert "Câu trả lời gia sư: Agent thực hiện nhiều bước." in text
+
+
+def test_human_split_is_stratified_by_conversation():
+    records = [
+        {"conversation_id": f"{label}-{index}", "label": label}
+        for label in ("learning_difficulty", "tutor_limitation", "off_topic", "normal")
+        for index in range(5)
+    ]
+    train, test = stratified_conversation_split(records, test_ratio=0.2)
+    train_ids = {row["conversation_id"] for row in train}
+    test_ids = {row["conversation_id"] for row in test}
+    assert train_ids.isdisjoint(test_ids)
+    assert {row["label"] for row in test} == {row["label"] for row in records}

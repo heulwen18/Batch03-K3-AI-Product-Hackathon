@@ -28,6 +28,17 @@ python3 -m pytest codebase/tests -q
 
 On Apple Silicon, training automatically uses MPS when available; otherwise it uses CUDA or CPU.
 
+### Train and test with human labels
+
+`data/test.csv` is labelled at conversation level. Train one sample per conversation with a stratified, leakage-free 80/20 split:
+
+```bash
+HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 \
+python3 codebase/train_human.py --epochs 5 --batch-size 4 --max-length 256
+```
+
+This writes `phobert_human_model/` and `human_trained_metrics.json` under `codebase/artifacts/`. The split stores conversation IDs so the result is reproducible and auditable.
+
 Artifacts are written to `codebase/artifacts/`:
 
 - `phobert_model/`: fine-tuned model, tokenizer, and label mapping

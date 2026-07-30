@@ -8,7 +8,7 @@ ID_TO_LABEL = {index: label for label, index in LABEL_TO_ID.items()}
 
 
 class PhoBERTTextClassifier:
-    """Three-class PhoBERT classifier with a small, dependency-light trainer."""
+    """Four-class PhoBERT classifier with a small, dependency-light trainer."""
 
     def __init__(self, model_name="vinai/phobert-base-v2", max_length=256,
                  batch_size=8, epochs=3, learning_rate=2e-5, seed=42):
@@ -43,6 +43,24 @@ class PhoBERTTextClassifier:
             parts.append(f"Đoạn được chọn: {turn['selected_text']}")
         parts.append(f"Câu trả lời gia sư: {turn['tutor_text']}")
         return " ".join(parts)
+
+    @staticmethod
+    def format_conversation(turns):
+        """Format one conversation as one classification sample.
+
+        Student text is placed first so questions from later turns remain useful
+        when the sequence reaches PhoBERT's token limit. Tutor excerpts retain
+        retrieval-failure language without letting long answers dominate.
+        """
+        questions = []
+        responses = []
+        for index, turn in enumerate(turns, start=1):
+            question = turn["student_text"][:240]
+            selected = turn.get("selected_text", "")[:160]
+            questions.append(f"Lượt {index}, học viên: {question} {selected}".strip())
+            responses.append(f"Lượt {index}, gia sư: {turn['tutor_text'][:320]}")
+        return " CÁC CÂU HỎI: ".join(["HỘI THOẠI", " ".join(questions)]) + \
+            " CÁC PHẢN HỒI: " + " ".join(responses)
 
     def _prepare(self):
         torch, _, model_class, tokenizer_class = self._dependencies()
@@ -145,3 +163,18 @@ class PhoBERTTextClassifier:
         path.mkdir(parents=True, exist_ok=True)
         self.model.save_pretrained(path)
         self.tokenizer.save_pretrained(path)
+
+    @classmethod
+    def load(cls, path, batch_size=8, max_length=256):
+        instance = cls(model_name=str(path), batch_size=batch_size, max_length=max_length)
+        torch, _, model_class, tokenizer_class = instance._dependencies()
+        instance.device = torch.device(
+            "cuda" if torch.cuda.is_available() else
+            "mps" if getattr(torch.backends, "mps", None) and torch.backends.mps.is_available() else
+            "cpu"
+        )
+        instance.tokenizer = tokenizer_class.from_pretrained(path, local_files_only=True)
+        instance.model = model_class.from_pretrained(path, local_files_only=True).to(instance.device)
+        instance.labels = [instance.model.config.id2label[index] for index in range(instance.model.config.num_labels)]
+        print(f"Fine-tuned PhoBERT loaded on {instance.device}", flush=True)
+        return instance
