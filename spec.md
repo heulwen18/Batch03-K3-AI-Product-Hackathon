@@ -145,24 +145,32 @@ Loại: [ ] Tối ưu tính năng có sẵn  [x] Tính năng mới
      không can thiệp giảng dạy). Fail nếu chéo nhau.
   3. *Trung thực khi không biết (pass/fail):* input không có trong nguồn → output phải chứa từ
      chối rõ ràng, không chứa nội dung bịa.
-- **Golden set (≥20 case, file `eval/golden_set.md` — TODO nhóm chốt trước khi đo):** cơ cấu theo
-  guide §2.6 — ≥2 case/lớp chỗ khó (8) + 8–10 case thường + 2–4 case hiếm; ≥10 case lấy từ chatlog
-  thật (đề xuất lấy từ các turn đã dẫn ở §1: T0399, T0578, T1100, T0638, T0525, T1096...).
+- **Golden set (22 case, file `eval/golden_set.md`, chạy bằng `eval/run_eval.py`):** cơ cấu theo
+  guide §2.6 — 8 case chỗ khó (2/lớp ①②③④) + 10 case thường + 4 case hiếm; **13/22 case từ chatlog
+  thật** (tham chiếu bằng mã ngày + mã hội thoại). Case rule-based/UI chấm tự động bằng assertion
+  (2 người chạy ra cùng kết quả); case AI live chấm bằng tiêu chí từ khoá + ràng buộc cấu trúc,
+  nguyên văn output được in vào file kết quả để 2 người chấm tay soát lại.
 - **Quality bar (chốt từ 23:59 N1, giữ nguyên):** *"Đạt khi ≥80% case qua cả 3 chiều, VÀ điều kiện
   cứng: 0 case bịa nguồn (chiều 1 và 3 không được fail ở bất kỳ case lớp ① nào)."*
-- **Kết quả các lượt chạy:** *(cập nhật đến trước CP6)*
+- **Kết quả các lượt chạy:** *(file chi tiết trong `eval/results-*.md`, kể cả case fail)*
 
   | Lượt | Thời điểm | Số case pass/tổng | % | Ghi chú |
   |---|---|---|---|---|
-  | Smoke test tay | 2026-07-30 | 5/5 | — | 3 kịch bản tutor (chuẩn/khó/ngoài phạm vi) + 2 ngày phân tích AI (22/07 nhỏ, 27/07 71 case→25 cụm) — chưa phải lượt chạy golden set chính thức |
-  | Lượt 1 (golden set đủ) | *(TODO)* | | | |
+  | Smoke test tay | 2026-07-30 | 5/5 | — | 3 kịch bản tutor + 2 ngày phân tích AI — chưa phải lượt golden set chính thức |
+  | Lượt 1 (offline) | 2026-07-30 | 16/17 | 94% | **GS15 FAIL** — "bạn là model ai nào vậy" không được gắn intent_drift (regex META quá hẹp, dạng câu có thật trong chatlog). 5 case AI skip |
+  | Lượt 2 (full, sau khi sửa META_RE) | 2026-07-30 | 22/22 | 100% | **ĐẠT quality bar** — lớp ① sạch (GS11 từ chối trung thực, GS12 không bịa cụm/không đổi số) |
 
 ## §8. Phân công & kế hoạch
 
-- **Phân công có tên:** spec: [Tên] · evidence/mining: [Tên] · prompt + golden set: [Tên] ·
-  code: [Tên] · demo: [Tên] *(nhóm điền — CP5 kiểm ngẫu nhiên, ai cũng giải thích được phần của mình)*
+- **Phân công có tên** *(chốt trong nhóm 14:25 — ai cũng giải thích được phần của mình, CP5 kiểm ngẫu nhiên)*:
+  - **Mai Anh** — evidence/mining: xử lý dữ liệu có sẵn, phân tích chatlog
+  - **Hoa Mai** — frontend: giao diện Streamlit + deploy
+  - **Phương** — code: build pipeline phân loại, tích hợp các phần
+  - **Linh** — demo: slide + kịch bản phỏng vấn validation + phỏng vấn user
+  - **Phượng** — kiểm thử: golden set + `eval/run_eval.py` + tối ưu (BM25, cache, tín hiệu)
+  - spec: cả nhóm góp, chốt chung trước 23:59 N1
 - **Willing users (≥3 tên):** [Tên 1 — vai TA], [Tên 2 — giảng viên], [Tên 3 — học viên zone khác]
-  *(nhóm điền từ CP1)*. **Kế hoạch validation CP5:** cho ≥5 người ngoài nhóm dùng dashboard với
+  *(nhóm điền từ CP1 — Linh phụ trách chốt danh sách)*. **Kế hoạch validation CP5:** cho ≥5 người ngoài nhóm dùng dashboard với
   ngày 27/07 + tự chat 3 câu rồi xem tab Nhật ký; 3 câu hỏi: (1) "Nhìn bản đồ này, bạn quyết định
   dạy lại cái gì buổi sau?" (2) "Con số nào bạn không tin? Vì sao?" (3) "Có thông tin nào về học
   viên mà bạn thấy KHÔNG nên hiện không?"; [Tên] log nguyên văn vào `validation/`.
@@ -180,3 +188,4 @@ Loại: [ ] Tối ưu tính năng có sẵn  [x] Tính năng mới
 | 2026-07-30 | Thêm tab Nhật ký hội thoại + panel phân tích từng hội thoại; bỏ sidebar cấu hình | Yêu cầu xem được nguyên văn hội thoại + phân tích tại chỗ; ô nhập API key trên UI dễ lộ khoá khi demo/chụp màn hình |
 | 2026-07-30 | Retrieval nâng lên BM25; thêm tín hiệu "tự nói không hiểu"; cache kết quả AI theo ngày; biểu đồ xu hướng; panel nguồn trích dẫn | Keyword-overlap thô xếp hạng kém; tiết kiệm quota (mỗi ngày 1 lời gọi); tăng khả năng tự kiểm chứng (G11) |
 | 2026-07-30 | Bỏ chế độ dry-run khỏi UI (giữ ở CLI cho dev) | Người dùng thật (giảng viên) không cần khái niệm dry-run — giảm 1 quyết định thừa trên giao diện |
+| 2026-07-30 | Mở rộng `META_RE` trong `signals.py` (bắt "bạn là model ai nào", "bạn dùng model llm gì") | Golden set lượt 1 case GS15 FAIL — regex cũ quá hẹp, miss dạng câu meta có thật trong chatlog; sửa xong chạy lại trọn bộ 22/22 pass |

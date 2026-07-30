@@ -21,7 +21,13 @@ FAIL_RE = re.compile(
     r'hệ thống tìm kiếm không|không có thông tin|không tìm được)', re.I
 )
 # Câu hỏi về chính con AI / meta, ngoài phạm vi bài giảng — ví dụ canvas: "Bạn là model nào?"
-META_RE = re.compile(r'(bạn là (model|ai) nào|bạn tên là gì|bạn là ai|thời tiết)', re.I)
+# Mở rộng sau khi golden set GS15 bắt được miss: "bạn là model ai nào vậy", "bạn dùng model llm gì"
+# (dạng câu có thật trong chatlog) không khớp bản regex cũ. Vẫn neo vào chữ "bạn ..." để không
+# bắt nhầm câu hỏi bài học chính đáng kiểu "nên chọn model nào cho bài toán X".
+META_RE = re.compile(
+    r'(bạn là (model|ai|mô hình)|bạn (dùng|chạy|đang dùng).{0,12}(model|mô hình)|'
+    r'bạn tên là gì|bạn là ai\b|thời tiết)', re.I
+)
 
 # Học viên tự nói ra mình đang bối rối — tín hiệu BỔ SUNG cho learning_difficulty, không phải
 # tín hiệu chính (spec.md §1: từ khoá cảm xúc quá hiếm ~1% mẫu, nhưng khi CÓ thì rất chắc chắn).
