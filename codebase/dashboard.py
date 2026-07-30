@@ -48,7 +48,7 @@ with st.sidebar:
         ["Dry-run (xem payload, không tốn quota)", "Gọi AI thật"],
         index=0,
     ) == "Dry-run (xem payload, không tốn quota)"
-    api_key_input = st.text_input("ANTHROPIC_API_KEY (bỏ trống nếu đã set biến môi trường)", type="password")
+    api_key_input = st.text_input("GROQ_API_KEY (bỏ trống nếu đã có trong codebase/.env)", type="password")
     run_clicked = st.button("▶ Phân tích ngày này", type="primary", use_container_width=True)
     st.caption("Khối 1 (số liệu tổng quan bên dưới) luôn chạy tức thời, không cần bấm nút.")
 
