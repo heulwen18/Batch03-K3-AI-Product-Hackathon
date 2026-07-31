@@ -172,7 +172,7 @@ Loại: [ ] Tối ưu tính năng có sẵn  [x] Tính năng mới
   - **Linh** — demo: slide + kịch bản phỏng vấn validation + phỏng vấn user
   - **Phượng** — kiểm thử: golden set + `eval/run_eval.py` + tối ưu (BM25, cache, tín hiệu)
   - spec: cả nhóm góp, chốt chung trước 23:59 N1
-- **Willing users (≥3 tên):** [Tên 1 — TA], [Tên 2 — giảng viên], [Tên 3 — học viên zone khác]
+- **Willing users (≥3 tên):** [Tên 1 — Lab Coach], [Tên 2 — giảng viên], [Tên 3 — học viên zone khác]
   *(nhóm điền từ CP1 — Linh phụ trách chốt danh sách)*. **Kế hoạch validation CP5:** cho ≥5 người ngoài nhóm dùng dashboard với
   ngày 27/07 + tự chat 3 câu rồi xem tab Nhật ký; 3 câu hỏi: (1) "Nhìn bản đồ này, bạn quyết định
   dạy lại cái gì buổi sau?" (2) "Con số nào bạn không tin? Vì sao?" (3) "Có thông tin nào về học
