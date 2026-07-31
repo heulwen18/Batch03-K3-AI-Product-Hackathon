@@ -73,16 +73,18 @@ def inject_styles() -> None:
             --success-soft: #DDF5E9;
             --mock-sidebar-width: 144px;
             --content-max-width: 1288px;
+            --font-ui: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+                "Segoe UI", sans-serif;
+            --font-size-ui: 12.5px;
         }
     
-                * { box-sizing: border-box; }
+        * { box-sizing: border-box; }
         html, body, .stApp,
         [data-testid="stAppViewContainer"],
         [data-testid="stMarkdownContainer"],
         [data-baseweb],
-        button, input, textarea, select {
-            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-                "Segoe UI", sans-serif !important;
+        button, input, textarea, select, svg text {
+            font-family: var(--font-ui) !important;
         }
         .stApp { background: var(--canvas); color: var(--ink); }
         #MainMenu, footer,
@@ -113,10 +115,15 @@ def inject_styles() -> None:
         .page-title {
             color: var(--ink);
             display: inline-block;
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 800;
             letter-spacing: -0.02em;
             margin-right: 10px;
+        }
+        .header-meta {
+            color: var(--muted);
+            font-size: var(--font-size-ui);
+            margin-left: 10px;
         }
     
         .card {
@@ -161,30 +168,30 @@ def inject_styles() -> None:
         .conv-item-time { color: var(--muted); font-size: 11px; }
         .conv-item-snippet {
             color: var(--ink-soft);
-            font-size: 13px;
+            font-size: var(--font-size-ui);
             line-height: 1.45;
             margin-top: 4px;
         }
     
-        .bubble-row { display: flex; margin-bottom: 18px; }
+        .bubble-row { display: flex; margin-bottom: 14px; }
         .avatar {
             align-items: center;
             border-radius: 50%;
             display: flex;
             flex-shrink: 0;
-            font-size: 14px;
-            height: 32px;
+            font-size: 12px;
+            height: 22px;
             justify-content: center;
-            margin-right: 10px;
-            width: 32px;
+            margin-right: 8px;
+            width: 22px;
         }
         .avatar-student { background: var(--purple-soft); }
         .avatar-tutor { background: var(--success-soft); }
         .msg-name { color: var(--ink); font-size: 13px; font-weight: 750; }
-        .msg-time { color: var(--muted); font-size: 11px; margin-left: 8px; }
+        .msg-time { color: var(--muted); font-size: 11px; margin-left: 7px; }
         .msg-content {
             color: var(--ink-soft);
-            font-size: 13px;
+            font-size: var(--font-size-ui);
             line-height: 1.55;
             margin-top: 3px;
             white-space: pre-wrap;
@@ -193,7 +200,7 @@ def inject_styles() -> None:
         .field-row {
             border-bottom: 1px solid #EFF0F4;
             display: flex;
-            font-size: 13px;
+            font-size: var(--font-size-ui);
             justify-content: space-between;
             padding: 7px 0;
         }
@@ -224,7 +231,7 @@ def inject_styles() -> None:
     
         .analysis-copy {
             color: var(--ink-soft);
-            font-size: 13px;
+            font-size: var(--font-size-ui);
             font-weight: 500;
             line-height: 1.62;
             overflow: visible;
@@ -235,15 +242,11 @@ def inject_styles() -> None:
         .analysis-copy + .analysis-copy { margin-top: 4px; }
         .st-key-analysis_card .field-row,
         .st-key-analysis_card .badge,
-        .st-key-summary_card .card-title,
-        .st-key-recommendation_card .card-title,
-        .st-key-knowledge_card .card-title,
-        .st-key-tags_card .card-title,
         .st-key-summary_card .analysis-copy,
         .st-key-recommendation_card .analysis-copy,
         .st-key-knowledge_card .analysis-copy,
         .st-key-tags_card .tag-pill {
-            font-size: 13px;
+            font-size: var(--font-size-ui);
         }
         .st-key-summary_card .card-title,
         .st-key-recommendation_card .card-title,
@@ -257,7 +260,7 @@ def inject_styles() -> None:
         .st-key-knowledge_card .analysis-copy {
             color: var(--ink-soft);
             display: block;
-            font-size: 13px;
+            font-size: var(--font-size-ui);
             font-weight: 500;
             line-height: 1.62;
             overflow: visible;
@@ -320,33 +323,28 @@ def inject_styles() -> None:
             margin-top: 7px;
             margin-bottom: 10px;
         }
-        .st-key-conversation_search {
-            margin-bottom: 14px;
-        }
         .st-key-conversation_list_scroll [data-testid="stButton"] {
             margin-top: 6px;
             margin-bottom: 20px;
         }
         .st-key-conversation_list_scroll [data-testid="stButton"] button {
-            background: #FFFFFF;
-            border-color: #E3E6EF;
+            background: #FFFFFF !important;
+            border-color: #E3E6EF !important;
             border-radius: 7px;
-            color: var(--purple-dark);
-            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-                "Segoe UI", sans-serif !important;
-            font-size: 13px !important;
-            font-weight: 400 !important;
-            line-height: 20.8px !important;
-            min-height: 35px;
+            color: var(--purple-dark) !important;
+            font-family: var(--font-ui) !important;
+            font-size: var(--font-size-ui) !important;
+            font-weight: 650 !important;
+            line-height: 1.2 !important;
+            min-height: 29px;
         }
         .st-key-conversation_list_scroll [data-testid="stButton"] *,
         .st-key-conversation_list_scroll button * {
             color: var(--purple-dark) !important;
-            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-                "Segoe UI", sans-serif !important;
-            font-size: 13px !important;
-            font-weight: 400 !important;
-            line-height: 20.8px !important;
+            font-family: var(--font-ui) !important;
+            font-size: var(--font-size-ui) !important;
+            font-weight: 650 !important;
+            line-height: 1.2 !important;
         }
         .st-key-chat_thread_scroll ::-webkit-scrollbar,
         .st-key-chat_info_scroll ::-webkit-scrollbar,
@@ -363,7 +361,7 @@ def inject_styles() -> None:
         .nav-item {
             border-radius: 6px;
             color: #34394C;
-            font-size: 13px;
+            font-size: var(--font-size-ui);
             font-weight: 650;
             margin-bottom: 3px;
             padding: 8px 10px;
@@ -387,43 +385,68 @@ def inject_styles() -> None:
     
         [data-testid="stButton"] button,
         [data-testid="stDownloadButton"] button {
-            border-color: var(--border);
+            background: #FFFFFF !important;
+            border-color: var(--border) !important;
             border-radius: 6px;
-            color: var(--ink-soft);
-            font-family: inherit;
-            font-size: 13px;
-            font-weight: 700;
-            min-height: 2.25rem;
+            color: #5C38D0 !important;
+            font-family: var(--font-ui) !important;
+            font-size: var(--font-size-ui) !important;
+            font-weight: 700 !important;
+            min-height: 29px;
+        }
+        [data-testid="stButton"] button *,
+        [data-testid="stDownloadButton"] button * {
+            color: inherit !important;
+            font-family: inherit !important;
+            font-size: inherit !important;
+            font-weight: inherit !important;
         }
         [data-testid="stButton"] button:hover,
         [data-testid="stDownloadButton"] button:hover {
-            border-color: var(--purple);
-            color: var(--purple-dark);
+            background: #F8F6FF !important;
+            border-color: var(--purple) !important;
+            color: var(--purple-dark) !important;
         }
         [data-testid="stButton"] button[kind="primary"],
         [data-testid="stDownloadButton"] button[kind="primary"] {
-            background: var(--purple);
-            border-color: var(--purple);
-            color: #FFFFFF;
+            background: var(--purple) !important;
+            border-color: var(--purple) !important;
+            color: #FFFFFF !important;
+        }
+        [data-testid="stButton"] button:disabled,
+        [data-testid="stDownloadButton"] button:disabled,
+        [data-testid="stDownloadButton"] [aria-disabled="true"] {
+            background: #F4F5F8 !important;
+            border-color: #E4E7EF !important;
+            color: #A0A5B6 !important;
+            opacity: 1 !important;
         }
         [data-baseweb="input"] > div,
         [data-baseweb="select"] > div {
-            background: var(--surface);
-            border-color: var(--border);
+            background: var(--surface) !important;
+            border-color: var(--border) !important;
             border-radius: 6px;
+        }
+        .st-key-conversation_mode_filter [data-baseweb="select"] > div,
+        .st-key-conversation_mode_filter [role="combobox"] {
+            background: #FFFFFF !important;
+            color: var(--ink-soft) !important;
+        }
+        .st-key-conversation_mode_filter [data-baseweb="select"] > div,
+        .st-key-conversation_mode_filter [role="combobox"] {
+            height: 30px !important;
+            min-height: 30px !important;
         }
         [data-baseweb="input"] input,
         [data-baseweb="select"] {
             color: var(--ink-soft);
-            font-family: inherit;
-            font-size: 13px;
+            font-family: var(--font-ui);
+            font-size: var(--font-size-ui);
         }
         .st-key-conversation_mode_filter input,
         .st-key-conversation_mode_filter [role="combobox"],
         .st-key-conversation_mode_filter [data-baseweb="select"],
         .st-key-conversation_mode_filter [data-baseweb="select"] *,
-        .st-key-conversation_search input,
-        .st-key-conversation_search input::placeholder,
         [role="listbox"],
         [role="listbox"] *,
         [role="option"],
@@ -431,11 +454,10 @@ def inject_styles() -> None:
         [data-baseweb="menu"] *,
         [data-baseweb="popover"] [role="option"],
         [data-baseweb="popover"] [role="option"] * {
-            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-                "Segoe UI", sans-serif !important;
-            font-size: 13px !important;
+            font-family: var(--font-ui) !important;
+            font-size: var(--font-size-ui) !important;
             font-weight: 400 !important;
-            line-height: 20.8px !important;
+            line-height: 1.35 !important;
         }
         [data-testid="stFileUploaderDropzone"] {
             background: #FAFBFD;
@@ -448,9 +470,13 @@ def inject_styles() -> None:
         }
         [data-baseweb="tab"] {
             color: var(--muted);
-            font-family: inherit;
-            font-size: 13px;
+            font-family: var(--font-ui);
+            font-size: var(--font-size-ui);
             font-weight: 700;
+            height: 30px;
+            min-height: 30px;
+            padding-bottom: 0;
+            padding-top: 0;
         }
         [aria-selected="true"][data-baseweb="tab"] { color: var(--purple-dark); }
         [data-baseweb="tab-highlight"] { background-color: var(--purple); }
@@ -470,27 +496,8 @@ def inject_styles() -> None:
         [data-testid="stButton"] button,
         [role="button"],
         [role="button"] * {
-            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-                "Segoe UI", sans-serif !important;
-            font-size: 13px !important;
-        }
-        .conv-item-snippet,
-        .msg-content,
-        .analysis-copy,
-        .st-key-summary_card .analysis-copy,
-        .st-key-recommendation_card .analysis-copy,
-        .st-key-knowledge_card .analysis-copy,
-        [role="tab"],
-        [role="tab"] *,
-        [data-testid="stDownloadButton"],
-        [data-testid="stDownloadButton"] *,
-        [data-testid="stButton"] button,
-        [data-testid="stDownloadButton"] button,
-        [data-testid="stDownloadButton"] a,
-        button,
-        [role="button"],
-        [role="button"] * {
-            font-weight: 400 !important;
+            font-family: var(--font-ui) !important;
+            font-size: var(--font-size-ui) !important;
         }
     
         .st-key-technical_info_card [data-testid="stVerticalBlockBorderWrapper"],
@@ -558,6 +565,7 @@ def inject_styles() -> None:
             }
             .mock-sidebar { padding: 12px 11px 11px; }
             .block-container { padding-left: 18px; padding-right: 18px; padding-top: 22px; }
+            .page-title { font-size: 26px; }
         }
         @media (max-width: 1100px) {
             :root {
@@ -566,7 +574,7 @@ def inject_styles() -> None:
             }
             .mock-sidebar { padding: 12px 9px 10px; }
             .block-container { padding-left: 1rem; padding-right: 1rem; }
-            .page-title { font-size: 21px; }
+            .page-title { font-size: 20px; }
         }
         </style>
         """,
@@ -702,7 +710,7 @@ def render(pipeline_mode: str = "Static demo") -> None:
         )
         if sel_row is not None and pd.notna(sel_row["start_time"]):
             header_line += (
-                f'<span style="color:#8F96AA;font-size:13px;margin-left:10px;">'
+                f'<span class="header-meta">'
                 f'{sel_row["start_time"].strftime("%H:%M %p · %d/%m/%Y")}</span>'
             )
         st.markdown(header_line, unsafe_allow_html=True)
@@ -739,16 +747,10 @@ def render(pipeline_mode: str = "Static demo") -> None:
             label_visibility="collapsed",
             key="conversation_mode_filter",
         )
-        search = st.text_input("Tìm kiếm…", label_visibility="collapsed", placeholder="🔎 Tìm kiếm…", key="conversation_search")
     
         filtered = summaries.copy()
         if mode_filter != "Tất cả mức độ":
             filtered = filtered[filtered["friction_type"] == mode_filter]
-        if search:
-            filtered = filtered[
-                filtered["snippet"].str.contains(search, case=False, na=False)
-                | filtered["conversation_id"].str.contains(search, case=False, na=False)
-            ]
     
         with st.container(height=CONVERSATION_LIST_HEIGHT, border=False, key="conversation_list_scroll"):
             for _, row in filtered.iterrows():
@@ -762,7 +764,7 @@ def render(pipeline_mode: str = "Static demo") -> None:
                         <div class="conv-item {'conv-item-selected' if selected else ''}">
                             <div style="display:flex;justify-content:space-between;">
                                 <span class="conv-item-title">#{row['conversation_id']}</span>
-                                <span class="badge" style="color:{fg};background:{bg};font-size:11px;">{label}</span>
+                                <span class="badge" style="color:{fg};background:{bg};">{label}</span>
                             </div>
                             <div class="conv-item-time">{time_str}</div>
                             <div class="conv-item-snippet">{row['snippet']}</div>

@@ -242,6 +242,28 @@ def inject_styles() -> None:
     @media(min-width:1350px){:root{--mock-sidebar-width:154px}.report-main{padding:22px 28px 14px}.report-title h1{font-size:22px}.report-title p{font-size:8px}.report-metric{height:138px;padding:14px 14px 8px}.report-metric-value{font-size:27px}.report-middle>.report-panel{height:272px}.stacked-chart,.chart-grid,.axis-labels{height:165px}.heatmap-panel{height:313px}.heat-topic,.heat-cell,.heat-average{height:30px}.note-panel{height:140px}.distribution-panel{height:200px}.statistics-panel{height:253px}}
     @media(max-width:1120px){.report-middle{grid-template-columns:1.25fr 1fr}.trend-analysis-panel{grid-column:1/-1;height:auto!important}.analysis-list{display:grid;grid-template-columns:1fr 1fr}.analysis-row:nth-child(2){border-top:0}.report-lower{grid-template-columns:1fr}.report-lower-right{grid-template-columns:.8fr 1.2fr}.distribution-panel,.statistics-panel{height:240px}}
     @media(max-width:820px){:root{--mock-sidebar-width:122px}.report-main{padding:12px}.report-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.report-middle{grid-template-columns:1fr}.report-middle>.report-panel{height:auto;min-height:250px}.trend-analysis-panel{grid-column:auto}.report-lower-right,.report-notes-grid{grid-template-columns:1fr}.distribution-panel,.statistics-panel{height:auto;min-height:220px}.heatmap-panel{overflow-x:auto}.heatmap-grid{min-width:590px}.report-status{flex-direction:column;align-items:flex-start;padding:8px 10px}}
+    /* Larger shared typography for readability across the three pages. */
+    .report-title h1{font-size:20px}
+    .report-title h1 span,.report-panel-heading h2 i{font-size:10.5px}
+    .report-title p,.export-report,.date-range,.range-tabs button,.report-metric-title{font-size:12.5px}
+    .date-range span,.metric-symbol{font-size:12.5px}
+    .report-metric-value{font-size:25px}
+    .metric-change,.report-panel-heading>a,.chart-legend,.axis-labels,.stack-column>span,
+    .ranked-issue,.ranked-issue small,.heatmap-grid,.heat-topic,.heat-cell,.heat-average,
+    .heat-legend,.insight-list,.recommendation-list,.donut span,.donut small,
+    .distribution-legend>div,.stat-item>span,.report-status{font-size:11.5px}
+    .metric-change b,.all-issues,.analysis-row strong,.stat-item b{font-size:12px}
+    .report-panel-heading h2{font-size:13px}
+    .analysis-row>span{font-size:14px}
+    .analysis-row p{font-size:11.5px}
+    .donut strong,.stat-item strong{font-size:17px}
+    .analysis-row{min-height:60px}
+    @media(min-width:1350px){
+      .report-title h1{font-size:26px}.report-metric-value{font-size:30px}
+      .report-metric{height:150px}.report-middle>.report-panel{height:315px}
+      .heatmap-panel{height:370px}.heat-topic,.heat-cell,.heat-average{height:35px}
+      .note-panel{height:185px}.distribution-panel{height:235px}.statistics-panel{height:285px}
+    }
     </style>
     """, unsafe_allow_html=True)
     st.markdown("<style>" + taskbar_css("sticky") + "</style>", unsafe_allow_html=True)

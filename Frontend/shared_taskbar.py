@@ -121,8 +121,8 @@ def taskbar_css(position: Literal["fixed", "sticky"] = "fixed") -> str:
         margin-bottom: 12px;
     }}
     .brand strong, .brand small {{ display: block; line-height: 1.2; }}
-    .brand strong {{ font-size: 8px; color: #202436; font-weight: 800; }}
-    .brand small {{ font-size: 7px; color: #737A91; margin-top: 1px; font-weight: 650; }}
+    .brand strong {{ font-size: 12px; color: #202436; font-weight: 800; }}
+    .brand small {{ font-size: 10px; color: #737A91; margin-top: 1px; font-weight: 650; }}
     .brand-mark {{
         width: 20px;
         height: 20px;
@@ -145,7 +145,7 @@ def taskbar_css(position: Literal["fixed", "sticky"] = "fixed") -> str:
     }}
     .mock-nav {{ display: grid; gap: 4px; }}
     .mock-nav a {{
-        height: 27px;
+        height: 34px;
         display: flex;
         align-items: center;
         gap: 8px;
@@ -153,7 +153,7 @@ def taskbar_css(position: Literal["fixed", "sticky"] = "fixed") -> str:
         border-radius: 6px;
         color: #34394C;
         text-decoration: none;
-        font-size: 8px;
+        font-size: 13px;
         font-weight: 750;
     }}
     .mock-nav a span {{
@@ -161,7 +161,7 @@ def taskbar_css(position: Literal["fixed", "sticky"] = "fixed") -> str:
         display: inline-grid;
         place-items: center;
         color: #141827;
-        font-size: 9px;
+        font-size: 13px;
     }}
     .mock-nav a.active {{
         color: #6747EA;
@@ -176,25 +176,25 @@ def taskbar_css(position: Literal["fixed", "sticky"] = "fixed") -> str:
         padding: 10px;
         margin: 0 0 10px;
     }}
-    .processing-card strong {{ display: block; font-size: 8px; color: #5D6476; }}
+    .processing-card strong {{ display: block; font-size: 12px; color: #5D6476; }}
     .processing-card strong i {{
         display: inline-block; width: 6px; height: 6px; margin-right: 6px;
         border-radius: 50%; background: #23C980; box-shadow: 0 0 0 3px #23C98018;
     }}
-    .processing-card p {{ margin: 7px 0; font-size: 7.5px; color: #747A8D; line-height: 1.45; }}
+    .processing-card p {{ margin: 7px 0; font-size: 11px; color: #747A8D; line-height: 1.45; }}
     .processing-card p span {{ color: #25A36B; font-weight: 700; }}
-    .processing-card small {{ font-size: 6.5px; color: #A0A5B6; }}
+    .processing-card small {{ font-size: 10px; color: #A0A5B6; }}
     .profile {{
         display: flex; align-items: center; gap: 7px; padding: 10px 0 2px;
         border-top: 1px solid #EFF0F5;
     }}
     .profile .avatar {{
         width: 24px; height: 24px; display: grid; place-items: center;
-        color: white; background: #6A52DB; border-radius: 50%; font-size: 9px; font-weight: 800;
+        color: white; background: #6A52DB; border-radius: 50%; font-size: 11px; font-weight: 800;
     }}
     .profile div:nth-child(2) {{ flex: 1; }}
     .profile strong, .profile small {{ display: block; }}
-    .profile strong {{ font-size: 7.5px; }}
-    .profile small {{ font-size: 6.5px; color: #9AA0B3; margin-top: 1px; }}
-    .profile > span {{ color: #A3A7B5; font-size: 9px; }}
+    .profile strong {{ font-size: 11px; }}
+    .profile small {{ font-size: 10px; color: #9AA0B3; margin-top: 1px; }}
+    .profile > span {{ color: #A3A7B5; font-size: 11px; }}
     """
