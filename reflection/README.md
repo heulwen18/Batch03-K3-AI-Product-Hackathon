@@ -6,8 +6,8 @@ những gì mình viết).
 
 | File | Người | Phần phụ trách |
 |---|---|---|
-| `mai-anh.md` | Mai Anh | Evidence/mining — xử lý dữ liệu, phân tích chatlog |
+| `mai-anh.md` | Mai Anh | Slide + Evidence/mining — xử lý dữ liệu, phân tích chatlog |
 | `hoa-mai.md` | Hoa Mai | Frontend Streamlit + deploy |
 | `phuong.md` | Phương | Pipeline phân loại + tích hợp |
-| `linh.md` | Linh | Slide + kịch bản & thực hiện phỏng vấn validation |
+| `linh.md` | Linh | Frontend + Form, kịch bản |
 | `phuong-test.md` | Phượng | Kiểm thử (golden set, eval) + tối ưu |

@@ -4,3 +4,5 @@ node_modules/
 codebase/results/
 codebase/.venv/
 codebase/__pycache__/
+.venv
+__pycache__/
