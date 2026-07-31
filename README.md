@@ -74,6 +74,26 @@ Ba điều nên biết trước khi làm:
 - Kết quả đo **ghi nhận trung thực** — kể cả khi không đạt mục tiêu nhóm tự đặt — vẫn được tính đủ điểm. Số liệu bị chỉnh sửa hoặc che giấu sẽ không được tính.
 - Reflection cá nhân chấm riêng theo rubric của khoá. Điểm vòng demo, chấm chéo trong zone và thưởng thêm (nếu có) theo thể lệ công bố lúc khai mạc.
 
+## Chạy phân tích Gemini trong prototype
+
+Trang Conversations có nút **Phân tích bằng Gemini**. Thêm key vào `.env` ở thư mục gốc:
+
+```dotenv
+GEMINI_API_KEY=your_key_here
+# Tuỳ chọn; mặc định là model stable gemini-2.5-flash
+GEMINI_MODEL=gemini-2.5-flash
+```
+
+Sau đó chạy:
+
+```powershell
+.\.venv\Scripts\streamlit.exe run Frontend\main.py
+```
+
+Gemini chỉ được gọi khi bấm nút. Kết quả được cache theo hội thoại trong phiên
+Streamlit và trace đã loại API key/nội dung đầu vào được ghi tại
+`eval/gemini_traces.jsonl`.
+
 ## Luật chung
 
 1. Prototype có 3 mức **Sketch / Mock / Working** — mức nào cũng bắt buộc **≥1 lời gọi AI chạy thật**.

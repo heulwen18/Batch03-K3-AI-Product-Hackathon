@@ -1,17 +1,31 @@
 import ast
+import html
 import io
 from datetime import datetime
+from pathlib import Path
 
 import pandas as pd
 import streamlit as st
 
-from shared_taskbar import get_active_page, render_taskbar, taskbar_css
+try:
+    from gemini_analysis import GeminiAnalysisError, analyze_conversation, resolve_api_key
+    from shared_taskbar import get_active_page, render_taskbar, taskbar_css
+except ModuleNotFoundError:  # Supports tests/imports launched from the repository root.
+    from Frontend.gemini_analysis import (
+        GeminiAnalysisError,
+        analyze_conversation,
+        resolve_api_key,
+    )
+    from Frontend.shared_taskbar import get_active_page, render_taskbar, taskbar_css
 
-DEFAULT_CSV_PATH = "../data/vlearn-pack/chatlog/chat_history_anonymized_for_hackathon.csv"
+DEFAULT_CSV_PATH = str(
+    Path(__file__).resolve().parents[1]
+    / "data"
+    / "vlearn-pack"
+    / "chatlog"
+    / "chat_history_anonymized_for_hackathon.csv"
+)
 
-# Static placeholder data used whenever the source CSV does not contain the
-# corresponding information yet. Replace these with real fields/tables once
-# they exist in the pipeline (classification model output, RAG tags, etc.)
 FRICTION_LABELS = {
     "learning_difficulty": ("Learning Difficulty", "#7C5CFC", "#F0ECFF"),
     "tutor_limitation": ("Tutor Limitation", "#C76A25", "#FFE8D9"),
@@ -25,18 +39,13 @@ SEVERITY_LABELS = {
     "low": ("Thấp", "#2D7354", "#DDF5E9"),
 }
 
-STATIC_INSIGHT = (
-    "Nhiều học viên gặp khó khăn với khái niệm \"Context Window\". "
-    "Cần nhấn mạnh ví dụ thực tế và phân biệt rõ với \"Memory\"."
-)
-
-STATIC_RECOMMENDATIONS = [
-    "Thêm ví dụ trực quan so sánh Context vs Memory",
-    "Sử dụng diagram để minh họa sự khác biệt",
-    "Đề xuất slide bổ sung về \"Context Window\" trong buổi học sắp tới",
-]
-
-STATIC_TAGS = ["context", "memory", "window size", "token", "RAG", "attention", "long-term memory"]
+ROOT_CAUSE_LABELS = {
+    "content_gap": "Thiếu nội dung trong tài liệu",
+    "retrieval_bug": "Hệ thống truy xuất chưa đúng",
+    "learner_difficulty": "Học viên chưa nắm khái niệm",
+    "off_topic": "Ngoài mục tiêu học tập",
+    "uncertain": "Chưa đủ bằng chứng",
+}
 
 NAV_ITEMS = [
     ("📊", "Live Dashboard"),
@@ -671,6 +680,19 @@ def build_conversation_summaries(df: pd.DataFrame) -> pd.DataFrame:
     return summary
 
 
+def conversation_messages(conv_msgs: pd.DataFrame) -> list[dict[str, str]]:
+    messages: list[dict[str, str]] = []
+    for row in conv_msgs.itertuples():
+        messages.append(
+            {
+                "role": str(getattr(row, "role", "unknown")),
+                "content": str(getattr(row, "content", "")),
+                "turn_id": str(getattr(row, "turn_id", "")),
+            }
+        )
+    return messages
+
+
 def render(pipeline_mode: str = "Static demo") -> None:
     # ----------------------------------------------------------------------------
     # FIXED LEFT TASKBAR - shared component
@@ -833,31 +855,92 @@ def render(pipeline_mode: str = "Static demo") -> None:
     # --- COLUMN 3: AI analysis --------------------------------------------------
     with col_analysis:
         if sel_row is not None:
+            conversation_id = str(st.session_state.selected_conv)
             friction_label, friction_fg, friction_bg = FRICTION_LABELS.get(
                 sel_row["friction_type"], FRICTION_LABELS["normal"]
             )
-            # Placeholder severity (not present in source CSV yet)
-            severity_key = "high" if sel_row["friction_type"] in ("learning_difficulty", "tutor_limitation") else "low"
-            severity_label, severity_fg, severity_bg = SEVERITY_LABELS[severity_key]
+            analysis_cache = st.session_state.setdefault("gemini_analysis_cache", {})
+            analysis = analysis_cache.get(conversation_id)
+            has_gemini_result = analysis is not None
+            api_key = resolve_api_key(st.secrets)
+
+            if has_gemini_result:
+                severity_key = str(analysis.get("severity", "low"))
+                if severity_key not in SEVERITY_LABELS:
+                    severity_key = "low"
+                severity_label, severity_fg, severity_bg = SEVERITY_LABELS[severity_key]
+                root_cause = ROOT_CAUSE_LABELS.get(
+                    str(analysis.get("root_cause", "uncertain")),
+                    ROOT_CAUSE_LABELS["uncertain"],
+                )
     
             with st.container(border=True, key="analysis_card", gap=None):
                 st.markdown('<div class="card-title">Phân tích của AI</div>', unsafe_allow_html=True)
+                analyze_clicked = st.button(
+                    "Phân tích lại bằng Gemini" if has_gemini_result else "Phân tích bằng Gemini",
+                    key=f"gemini_analyze_{conversation_id}",
+                    type="primary",
+                    disabled=not bool(api_key),
+                    width="stretch",
+                )
+                if analyze_clicked and api_key:
+                    try:
+                        with st.spinner("Gemini đang đối chiếu hội thoại và transcript…"):
+                            analysis = analyze_conversation(
+                                conversation_id=conversation_id,
+                                fixed_category=str(sel_row["friction_type"]),
+                                messages=conversation_messages(conv_msgs),
+                                api_key=api_key,
+                            )
+                        analysis_cache[conversation_id] = analysis
+                        has_gemini_result = True
+                        severity_key = str(analysis["severity"])
+                        severity_label, severity_fg, severity_bg = SEVERITY_LABELS[severity_key]
+                        root_cause = ROOT_CAUSE_LABELS.get(
+                            str(analysis["root_cause"]),
+                            ROOT_CAUSE_LABELS["uncertain"],
+                        )
+                        st.toast("Đã phân tích bằng Gemini.", icon=":material/check_circle:")
+                    except GeminiAnalysisError as exc:
+                        st.error(str(exc), icon=":material/error:")
+
+                if not api_key:
+                    st.caption("Chưa có GEMINI_API_KEY; chưa thể tạo kết quả phân tích AI.")
+                elif has_gemini_result:
+                    st.caption("Kết quả Gemini đã được cache cho hội thoại này.")
+                else:
+                    st.caption(
+                        "Chưa có kết quả AI. Nhấn nút để phân tích hội thoại bằng Gemini."
+                    )
+
                 st.markdown(
                     f'<div class="field-row"><span class="field-label">Loại friction</span>'
                     f'<span class="badge" style="color:{friction_fg};background:{friction_bg};">{friction_label}</span></div>',
                     unsafe_allow_html=True,
                 )
-                st.markdown(
-                    f'<div class="field-row"><span class="field-label">Mức độ</span>'
-                    f'<span class="badge" style="color:{severity_fg};background:{severity_bg};">{severity_label}</span></div>',
-                    unsafe_allow_html=True,
-                )
-    
-                st.markdown(
-                    f'<div class="field-row"><span class="field-label">Chủ đề</span>'
-                    f'<span class="badge" style="color:#6747EA;background:#F0ECFF;">{sel_row["day_code"]}</span></div>',
-                    unsafe_allow_html=True,
-                )
+                if has_gemini_result:
+                    st.markdown(
+                        f'<div class="field-row"><span class="field-label">Mức độ</span>'
+                        f'<span class="badge" style="color:{severity_fg};background:{severity_bg};">{severity_label}</span></div>',
+                        unsafe_allow_html=True,
+                    )
+                    st.markdown(
+                        f'<div class="field-row"><span class="field-label">Chủ đề</span>'
+                        f'<span class="badge" style="color:#6747EA;background:#F0ECFF;">'
+                        f'{html.escape(str(analysis.get("topic", "Chưa xác định")))}</span></div>',
+                        unsafe_allow_html=True,
+                    )
+                    st.markdown(
+                        f'<div class="field-row"><span class="field-label">Nguyên nhân</span>'
+                        f'<span class="field-value">{html.escape(root_cause)}</span></div>',
+                        unsafe_allow_html=True,
+                    )
+                    confidence_text = f'{float(analysis.get("confidence", 0.0)) * 100:.0f}%'
+                    st.markdown(
+                        f'<div class="field-row"><span class="field-label">Độ tin cậy</span>'
+                        f'<span class="field-value">{confidence_text}</span></div>',
+                        unsafe_allow_html=True,
+                    )
                 st.markdown(
                     f'<div class="field-row"><span class="field-label">Thời gian bắt đầu</span>'
                     f'<span class="field-value">{sel_row["start_time"].strftime("%H:%M:%S") if pd.notna(sel_row["start_time"]) else "-"}</span></div>',
@@ -874,51 +957,55 @@ def render(pipeline_mode: str = "Static demo") -> None:
                     unsafe_allow_html=True,
                 )
     
-            # Tóm tắt vấn đề (static placeholder narrative, seeded with real misconceptions if any)
-            with st.container(border=True, key="summary_card", gap="xsmall"):
-                st.markdown('<div class="card-title">📝 Tóm tắt vấn đề</div>', unsafe_allow_html=True)
-                if sel_row["misconceptions"]:
-                    miscon_text = "; ".join(sel_row["misconceptions"])
+            if has_gemini_result:
+                with st.container(border=True, key="summary_card", gap="xsmall"):
+                    st.markdown('<div class="card-title">📝 Tóm tắt vấn đề</div>', unsafe_allow_html=True)
                     st.markdown(
                         f"<div class='analysis-copy'>"
-                        f"Học viên có dấu hiệu: <b>{miscon_text}</b>. {STATIC_INSIGHT}</div>",
+                        f"{html.escape(str(analysis.get('summary', '')))}</div>",
                         unsafe_allow_html=True,
                     )
-                else:
+
+                with st.container(border=True, key="recommendation_card", gap="xsmall"):
                     st.markdown(
-                        f"<div class='analysis-copy'>{STATIC_INSIGHT}</div>",
+                        '<div class="card-title" style="color:#C76A25;">💡 Khuyến nghị hành động</div>',
                         unsafe_allow_html=True,
                     )
-    
-            # Khuyến nghị hành động (static)
-            with st.container(border=True, key="recommendation_card", gap="xsmall"):
-                st.markdown(
-                    '<div class="card-title" style="color:#C76A25;">💡 Khuyến nghị hành động</div>',
-                    unsafe_allow_html=True,
-                )
-                for rec in STATIC_RECOMMENDATIONS:
+                    for rec in analysis.get("recommendations", []):
+                        st.markdown(
+                            f"<div class='analysis-copy'>• {html.escape(str(rec))}</div>",
+                            unsafe_allow_html=True,
+                        )
+
+                with st.container(border=True, key="knowledge_card", gap="xsmall"):
                     st.markdown(
-                        f"<div class='analysis-copy'>• {rec}</div>",
+                        '<div class="card-title" style="color:#6747EA;">📚 Bằng chứng transcript</div>',
                         unsafe_allow_html=True,
                     )
-                st.button("Xem gợi ý chi tiết →", key="rec_btn")
-    
-            # Trích xuất kiến thức (static)
-            with st.container(border=True, key="knowledge_card", gap="xsmall"):
-                st.markdown(
-                    '<div class="card-title" style="color:#6747EA;">📚 Trích xuất kiến thức</div>',
-                    unsafe_allow_html=True,
-                )
-                st.markdown(
-                    f"<div class='analysis-copy'>{STATIC_INSIGHT}</div>",
-                    unsafe_allow_html=True,
-                )
-    
-            # Tag liên quan (static)
-            with st.container(border=True, key="tags_card", gap="xsmall"):
-                st.markdown('<div class="card-title">🏷️ Tag liên quan</div>', unsafe_allow_html=True)
-                tags_html = "".join(f'<span class="tag-pill">{t}</span>' for t in STATIC_TAGS)
-                st.markdown(tags_html + '<span class="tag-pill">+</span>', unsafe_allow_html=True)
+                    evidence = analysis.get("evidence", [])
+                    if evidence:
+                        for item in evidence:
+                            segment_id = html.escape(str(item.get("segment_id", "")))
+                            excerpt = html.escape(str(item.get("text", ""))[:280])
+                            st.markdown(
+                                f"<div class='analysis-copy'><b>[{segment_id}]</b> {excerpt}</div>",
+                                unsafe_allow_html=True,
+                            )
+                    else:
+                        st.markdown(
+                            "<div class='analysis-copy'>Gemini không chọn được đoạn transcript "
+                            "phù hợp cho kết quả này.</div>",
+                            unsafe_allow_html=True,
+                        )
+
+                with st.container(border=True, key="tags_card", gap="xsmall"):
+                    st.markdown('<div class="card-title">🏷️ Tag liên quan</div>', unsafe_allow_html=True)
+                    tags_html = "".join(
+                        f'<span class="tag-pill">{html.escape(str(tag))}</span>'
+                        for tag in analysis.get("tags", [])
+                    )
+                    if tags_html:
+                        st.markdown(tags_html, unsafe_allow_html=True)
 
 
 def main() -> None:
