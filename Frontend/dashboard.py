@@ -13,7 +13,7 @@ from typing import Iterable
 import pandas as pd
 import streamlit as st
 
-from shared_taskbar import get_active_page, taskbar_css, taskbar_html
+from shared_taskbar import get_active_page
 
 
 APP_DIR = Path(__file__).resolve().parent
@@ -531,7 +531,7 @@ def _trend_svg(turns: pd.DataFrame) -> str:
             f'<line x1="{left}" y1="{y:.1f}" x2="{width-right}" y2="{y:.1f}" '
             f'stroke="#EBEDF4" stroke-width="1"/>'
             f'<text x="{left-10}" y="{y+4:.1f}" text-anchor="end" '
-            f'fill="#9AA0B5" font-size="14">{value}</text>'
+            f'fill="#9AA0B5" font-size="10">{value}</text>'
         )
 
     area_elements = []
@@ -574,7 +574,7 @@ def _trend_svg(turns: pd.DataFrame) -> str:
         x = left if len(raw_labels) == 1 else left + index * plot_w / (len(raw_labels) - 1)
         labels.append(
             f'<text x="{x:.1f}" y="{height-10}" text-anchor="middle" '
-            f'fill="#9AA0B5" font-size="14">{html.escape(raw_labels[index])}</text>'
+            f'fill="#9AA0B5" font-size="10">{html.escape(raw_labels[index])}</text>'
         )
     svg = (
         f'<svg xmlns="http://www.w3.org/2000/svg" class="trend-svg" viewBox="0 0 {width} {height}" '
@@ -787,8 +787,6 @@ def _dashboard_html(turns: pd.DataFrame, pipeline_mode: str) -> str:
     return dedent(
         f"""
         <section class="app-shell" aria-label="AI Learning Analytics Copilot">
-          {taskbar_html("dashboard", pipeline_mode)}
-
           <main class="dashboard-main">
             <header class="dashboard-header">
               <div class="page-title">
@@ -1068,7 +1066,6 @@ def inject_styles() -> None:
           --border: #E8EBF3;
           --purple: #7557F6;
           --canvas: #F6F7FB;
-          --mock-sidebar-width: 154px;
         }
         * { box-sizing: border-box; }
         html, body, .stApp,
@@ -1101,6 +1098,7 @@ def inject_styles() -> None:
           color: var(--ink);
         }
         .dashboard-main {
+          grid-column: 2;
           min-width: 0;
           min-height: 100vh;
           display: flex;
@@ -1356,7 +1354,6 @@ def inject_styles() -> None:
           padding: 16px; background: white; border: 1px solid var(--border); border-radius: 10px;
         }
         @media (min-width: 1350px) {
-          :root { --mock-sidebar-width: 165px; }
           .dashboard-main { padding: 22px 28px 14px; }
           .app-shell { grid-template-columns: var(--mock-sidebar-width, 154px) minmax(0, 1fr); }
           .metric-card { height: 126px; }
@@ -1370,7 +1367,6 @@ def inject_styles() -> None:
           .page-title h1 { font-size: 22px; }
         }
         @media (max-width: 960px) {
-          :root { --mock-sidebar-width: 140px; }
           .app-shell { grid-template-columns: var(--mock-sidebar-width, 122px) minmax(0, 1fr); }
           .dashboard-main { padding: 12px; }
           .metric-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1388,59 +1384,10 @@ def inject_styles() -> None:
           .topic-pill { display: none; }
           .status-bar { align-items: flex-start; flex-direction: column; padding: 9px; }
         }
-        /* Larger shared typography for readability across the three pages. */
-        .page-title h1 { font-size: 20px; }
-        .page-title h1 span,
-        .alert-row a,
-        .alert-row time,
-        .conversation-copy span,
-        .topic-pill,
-        .topic-block small { font-size: 10.5px; }
-        .page-title p,
-        .time-select,
-        .metric-sub,
-        .ghost-button,
-        .legend span,
-        .issue-count,
-        .alert-row p,
-        .action-copy p,
-        .action-button,
-        .time-badge,
-        .conversation-copy p,
-        .topic-block span,
-        .status-bar,
-        .empty-note { font-size: 11.5px; }
-        .header-actions,
-        .issue-row,
-        .alert-row strong { font-size: 12px; }
-        .metric-head,
-        .action-copy strong { font-size: 12.5px; }
-        .panel-heading h3 { font-size: 13px; }
-        .time-select b { font-size: 13px; }
-        .metric-icon { font-size: 12px; }
-        .action-icon { font-size: 14px; }
-        .topic-block strong { font-size: 16px; }
-        .metric-value { font-size: 25px; }
-        .section-title h1 { font-size: 27px; }
-        .section-title p { font-size: 14px; }
-        @media (min-width: 1350px) {
-          .page-title h1 { font-size: 26px; }
-          .metric-value { font-size: 30px; }
-          .metric-card { height: 138px; }
-          .dashboard-grid-top { grid-template-rows: 270px 68px; }
-          .trend-panel, .issues-panel { height: 270px; }
-          .action-card { height: 68px; }
-          .conversations-panel, .topic-panel { height: 225px; }
-          .trend-svg { height: 198px; }
-          .topic-map { grid-auto-rows: 51px; }
-        }
         </style>
         """,
         unsafe_allow_html=True,
     )
-    st.markdown("<style>" + taskbar_css("sticky") + "</style>", unsafe_allow_html=True)
-
-
 def render() -> None:
     inject_styles()
 

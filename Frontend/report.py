@@ -5,8 +5,6 @@ from urllib.parse import quote
 
 import streamlit as st
 
-from shared_taskbar import taskbar_css, taskbar_html
-
 
 PURPLE = "#7048E8"
 ORANGE = "#FF922B"
@@ -133,7 +131,6 @@ def _report_html() -> str:
     )
     return dedent(f"""
     <section class="report-shell" aria-label="Reports - AI Learning Analytics Copilot">
-      {taskbar_html("reports", "Static demo")}
       <main class="report-main">
         <header class="report-header">
           <div class="report-title"><h1>Reports <span title="Thông tin báo cáo">i</span></h1><p>Tổng hợp và phân tích hiệu quả học tập</p></div>
@@ -200,13 +197,13 @@ def _report_html() -> str:
 def inject_styles() -> None:
     st.markdown("""
     <style>
-    :root{--ink:#111528;--muted:#8F96AA;--border:#E8EBF3;--purple:#7048E8;--canvas:#F6F7FB;--mock-sidebar-width:154px}
+    :root{--ink:#111528;--muted:#8F96AA;--border:#E8EBF3;--purple:#7048E8;--canvas:#F6F7FB;--mock-sidebar-width:144px}
     *{box-sizing:border-box}html,body,.stApp,[data-testid="stAppViewContainer"],[data-testid="stMarkdownContainer"],[data-baseweb],button,input,textarea,select,svg text{font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important}
     html{scroll-behavior:smooth}body,.stApp{margin:0;background:var(--canvas);color:var(--ink)}
     #MainMenu,footer,[data-testid="stHeader"],[data-testid="stToolbar"],[data-testid="stSidebar"],[data-testid="collapsedControl"]{display:none!important}
     [data-testid="stAppViewContainer"]>.main{background:var(--canvas)}.block-container{max-width:none;padding:0!important}[data-testid="stVerticalBlock"]{gap:0}.stHtml{width:100%}
     .report-shell{width:100%;min-height:100vh;display:grid;grid-template-columns:var(--mock-sidebar-width) minmax(0,1fr);background:var(--canvas);color:var(--ink)}
-    .report-main{min-width:0;min-height:100vh;padding:15px 17px 12px}.report-header{min-height:49px;display:flex;justify-content:space-between;align-items:flex-start;gap:18px}
+    .report-main{grid-column:2;min-width:0;min-height:100vh;padding:15px 17px 12px}.report-header{min-height:49px;display:flex;justify-content:space-between;align-items:flex-start;gap:18px}
     .report-title h1{display:flex;align-items:center;gap:7px;margin:0;color:#111528;font-size:17px;line-height:1.15;font-weight:800;letter-spacing:-.01em}
     .report-title h1 span,.report-panel-heading h2 i{width:12px;height:12px;display:inline-grid;place-items:center;border:1px solid #ABB1C0;border-radius:50%;color:#9299A9;font-size:7px;font-style:normal;font-weight:750}
     .report-title p{margin:6px 0 0;color:#949BAD;font-size:7.7px;line-height:1.2}
@@ -239,36 +236,11 @@ def inject_styles() -> None:
     .distribution-legend{display:grid;gap:12px}.distribution-legend>div{display:grid;grid-template-columns:7px minmax(90px,1fr) auto;align-items:center;gap:6px;color:#4E5465;font-size:7px}.distribution-legend i{width:7px;height:7px;border-radius:2px}.distribution-legend strong{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:650}.distribution-legend span{color:#686F81;white-space:nowrap}
     .statistics-panel{height:250px}.statistics-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));row-gap:24px;column-gap:14px;padding:14px 4px 2px}.stat-item{min-width:0}.stat-item>span{min-height:25px;display:block;color:#7A8193;font-size:6.5px;line-height:1.45}.stat-item strong{display:block;margin:5px 0 2px;color:#1A1E2C;font-size:15px;line-height:1;font-weight:800}.stat-item b{font-size:7px;font-weight:800}.stat-item b.up{color:#15945E}.stat-item b.down{color:#D84C5C}
     .report-status{min-height:30px;display:flex;align-items:center;justify-content:space-between;gap:15px;margin-top:10px;padding:0 11px;border:1px solid var(--border);border-radius:7px;background:#fff;color:#8A91A3;font-size:6.7px}.report-status span{display:inline-flex;align-items:center}.report-status i{width:7px;height:7px;margin-right:6px;border:2px solid #48B99B;border-radius:50%}.report-status b{margin-left:6px;color:#9FA5B4}
-    @media(min-width:1350px){:root{--mock-sidebar-width:165px}.report-main{padding:22px 28px 14px}.report-title h1{font-size:22px}.report-title p{font-size:8px}.report-metric{height:138px;padding:14px 14px 8px}.report-metric-value{font-size:27px}.report-middle>.report-panel{height:272px}.stacked-chart,.chart-grid,.axis-labels{height:165px}.heatmap-panel{height:313px}.heat-topic,.heat-cell,.heat-average{height:30px}.note-panel{height:140px}.distribution-panel{height:200px}.statistics-panel{height:253px}}
+    @media(min-width:1350px){:root{--mock-sidebar-width:154px}.report-main{padding:22px 28px 14px}.report-title h1{font-size:22px}.report-title p{font-size:8px}.report-metric{height:138px;padding:14px 14px 8px}.report-metric-value{font-size:27px}.report-middle>.report-panel{height:272px}.stacked-chart,.chart-grid,.axis-labels{height:165px}.heatmap-panel{height:313px}.heat-topic,.heat-cell,.heat-average{height:30px}.note-panel{height:140px}.distribution-panel{height:200px}.statistics-panel{height:253px}}
     @media(max-width:1120px){.report-middle{grid-template-columns:1.25fr 1fr}.trend-analysis-panel{grid-column:1/-1;height:auto!important}.analysis-list{display:grid;grid-template-columns:1fr 1fr}.analysis-row:nth-child(2){border-top:0}.report-lower{grid-template-columns:1fr}.report-lower-right{grid-template-columns:.8fr 1.2fr}.distribution-panel,.statistics-panel{height:240px}}
-    @media(max-width:820px){:root{--mock-sidebar-width:140px}.report-main{padding:12px}.report-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.report-middle{grid-template-columns:1fr}.report-middle>.report-panel{height:auto;min-height:250px}.trend-analysis-panel{grid-column:auto}.report-lower-right,.report-notes-grid{grid-template-columns:1fr}.distribution-panel,.statistics-panel{height:auto;min-height:220px}.heatmap-panel{overflow-x:auto}.heatmap-grid{min-width:590px}.report-status{flex-direction:column;align-items:flex-start;padding:8px 10px}}
-    /* Larger shared typography for readability across the three pages. */
-    .report-title h1{font-size:20px}
-    .report-title h1 span,.report-panel-heading h2 i{font-size:10.5px}
-    .report-title p,.export-report,.date-range,.range-tabs button,.report-metric-title{font-size:12.5px}
-    .date-range span,.metric-symbol{font-size:12.5px}
-    .report-metric-value{font-size:25px}
-    .metric-change,.report-panel-heading>a,.chart-legend,.axis-labels,.stack-column>span,
-    .ranked-issue,.ranked-issue small,.heatmap-grid,.heat-topic,.heat-cell,.heat-average,
-    .heat-legend,.insight-list,.recommendation-list,.donut span,.donut small,
-    .distribution-legend>div,.stat-item>span,.report-status{font-size:11.5px}
-    .metric-change b,.all-issues,.analysis-row strong,.stat-item b{font-size:12px}
-    .report-panel-heading h2{font-size:13px}
-    .analysis-row>span{font-size:14px}
-    .analysis-row p{font-size:11.5px}
-    .donut strong,.stat-item strong{font-size:17px}
-    .analysis-row{min-height:60px}
-    @media(min-width:1350px){
-      .report-title h1{font-size:26px}.report-metric-value{font-size:30px}
-      .report-metric{height:150px}.report-middle>.report-panel{height:315px}
-      .heatmap-panel{height:370px}.heat-topic,.heat-cell,.heat-average{height:35px}
-      .note-panel{height:185px}.distribution-panel{height:235px}.statistics-panel{height:285px}
-    }
+    @media(max-width:820px){:root{--mock-sidebar-width:122px}.report-main{padding:12px}.report-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.report-middle{grid-template-columns:1fr}.report-middle>.report-panel{height:auto;min-height:250px}.trend-analysis-panel{grid-column:auto}.report-lower-right,.report-notes-grid{grid-template-columns:1fr}.distribution-panel,.statistics-panel{height:auto;min-height:220px}.heatmap-panel{overflow-x:auto}.heatmap-grid{min-width:590px}.report-status{flex-direction:column;align-items:flex-start;padding:8px 10px}}
     </style>
     """, unsafe_allow_html=True)
-    st.markdown("<style>" + taskbar_css("sticky") + "</style>", unsafe_allow_html=True)
-
-
 def render() -> None:
     inject_styles()
     st.html(_report_html())

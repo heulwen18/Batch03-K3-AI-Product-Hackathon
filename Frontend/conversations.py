@@ -1,31 +1,50 @@
 import ast
+import hashlib
 import html
 import io
+import json
+import os
+import urllib.error
+import urllib.request
 from datetime import datetime
 from pathlib import Path
 
 import pandas as pd
 import streamlit as st
 
-try:
-    from gemini_analysis import GeminiAnalysisError, analyze_conversation, resolve_api_key
-    from shared_taskbar import get_active_page, render_taskbar, taskbar_css
-except ModuleNotFoundError:  # Supports tests/imports launched from the repository root.
-    from Frontend.gemini_analysis import (
-        GeminiAnalysisError,
-        analyze_conversation,
-        resolve_api_key,
-    )
-    from Frontend.shared_taskbar import get_active_page, render_taskbar, taskbar_css
+from shared_taskbar import get_active_page
 
-DEFAULT_CSV_PATH = str(
-    Path(__file__).resolve().parents[1]
-    / "data"
-    / "vlearn-pack"
-    / "chatlog"
-    / "chat_history_anonymized_for_hackathon.csv"
-)
+APP_DIR = Path(__file__).resolve().parent
+PROJECT_DIR = APP_DIR.parent
+DEFAULT_CSV_PATH = "../data/vlearn-pack/chatlog/chat_history_anonymized_for_hackathon.csv"
+DEFAULT_GEMINI_MODEL = "gemini-3.5-flash-lite"
+GEMINI_API_URL_TEMPLATE = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+MAX_TRANSCRIPT_CHARS = 12000
 
+GEMINI_INSIGHT_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "problem_summary": {"type": "string"},
+        "action_recommendations": {
+            "type": "array",
+            "items": {"type": "string"},
+        },
+        "knowledge_extraction": {"type": "string"},
+        "related_tags": {
+            "type": "array",
+            "items": {"type": "string"},
+        },
+    },
+    "required": [
+        "problem_summary",
+        "action_recommendations",
+        "knowledge_extraction",
+        "related_tags",
+    ],
+}
+# Static placeholder data used whenever the source CSV does not contain the
+# corresponding information yet. Replace these with real fields/tables once
+# they exist in the pipeline (classification model output, RAG tags, etc.)
 FRICTION_LABELS = {
     "learning_difficulty": ("Learning Difficulty", "#7C5CFC", "#F0ECFF"),
     "tutor_limitation": ("Tutor Limitation", "#C76A25", "#FFE8D9"),
@@ -39,13 +58,18 @@ SEVERITY_LABELS = {
     "low": ("Thấp", "#2D7354", "#DDF5E9"),
 }
 
-ROOT_CAUSE_LABELS = {
-    "content_gap": "Thiếu nội dung trong tài liệu",
-    "retrieval_bug": "Hệ thống truy xuất chưa đúng",
-    "learner_difficulty": "Học viên chưa nắm khái niệm",
-    "off_topic": "Ngoài mục tiêu học tập",
-    "uncertain": "Chưa đủ bằng chứng",
-}
+STATIC_INSIGHT = (
+    "Nhiều học viên gặp khó khăn với khái niệm \"Context Window\". "
+    "Cần nhấn mạnh ví dụ thực tế và phân biệt rõ với \"Memory\"."
+)
+
+STATIC_RECOMMENDATIONS = [
+    "Thêm ví dụ trực quan so sánh Context vs Memory",
+    "Sử dụng diagram để minh họa sự khác biệt",
+    "Đề xuất slide bổ sung về \"Context Window\" trong buổi học sắp tới",
+]
+
+STATIC_TAGS = ["context", "memory", "window size", "token", "RAG", "attention", "long-term memory"]
 
 NAV_ITEMS = [
     ("📊", "Live Dashboard"),
@@ -80,20 +104,18 @@ def inject_styles() -> None:
             --success: #23C980;
             --success-text: #2D7354;
             --success-soft: #DDF5E9;
-            --mock-sidebar-width: 154px;
+            --mock-sidebar-width: 144px;
             --content-max-width: 1288px;
-            --font-ui: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-                "Segoe UI", sans-serif;
-            --font-size-ui: 12.5px;
         }
     
-        * { box-sizing: border-box; }
+                * { box-sizing: border-box; }
         html, body, .stApp,
         [data-testid="stAppViewContainer"],
         [data-testid="stMarkdownContainer"],
         [data-baseweb],
-        button, input, textarea, select, svg text {
-            font-family: var(--font-ui) !important;
+        button, input, textarea, select {
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+                "Segoe UI", sans-serif !important;
         }
         .stApp { background: var(--canvas); color: var(--ink); }
         #MainMenu, footer,
@@ -124,15 +146,10 @@ def inject_styles() -> None:
         .page-title {
             color: var(--ink);
             display: inline-block;
-            font-size: 20px;
+            font-size: 24px;
             font-weight: 800;
             letter-spacing: -0.02em;
             margin-right: 10px;
-        }
-        .header-meta {
-            color: var(--muted);
-            font-size: var(--font-size-ui);
-            margin-left: 10px;
         }
     
         .card {
@@ -177,30 +194,30 @@ def inject_styles() -> None:
         .conv-item-time { color: var(--muted); font-size: 11px; }
         .conv-item-snippet {
             color: var(--ink-soft);
-            font-size: var(--font-size-ui);
+            font-size: 13px;
             line-height: 1.45;
             margin-top: 4px;
         }
     
-        .bubble-row { display: flex; margin-bottom: 14px; }
+        .bubble-row { display: flex; margin-bottom: 18px; }
         .avatar {
             align-items: center;
             border-radius: 50%;
             display: flex;
             flex-shrink: 0;
-            font-size: 12px;
-            height: 22px;
+            font-size: 14px;
+            height: 32px;
             justify-content: center;
-            margin-right: 8px;
-            width: 22px;
+            margin-right: 10px;
+            width: 32px;
         }
         .avatar-student { background: var(--purple-soft); }
         .avatar-tutor { background: var(--success-soft); }
         .msg-name { color: var(--ink); font-size: 13px; font-weight: 750; }
-        .msg-time { color: var(--muted); font-size: 11px; margin-left: 7px; }
+        .msg-time { color: var(--muted); font-size: 11px; margin-left: 8px; }
         .msg-content {
             color: var(--ink-soft);
-            font-size: var(--font-size-ui);
+            font-size: 13px;
             line-height: 1.55;
             margin-top: 3px;
             white-space: pre-wrap;
@@ -209,7 +226,7 @@ def inject_styles() -> None:
         .field-row {
             border-bottom: 1px solid #EFF0F4;
             display: flex;
-            font-size: var(--font-size-ui);
+            font-size: 13px;
             justify-content: space-between;
             padding: 7px 0;
         }
@@ -240,7 +257,7 @@ def inject_styles() -> None:
     
         .analysis-copy {
             color: var(--ink-soft);
-            font-size: var(--font-size-ui);
+            font-size: 13px;
             font-weight: 500;
             line-height: 1.62;
             overflow: visible;
@@ -251,11 +268,15 @@ def inject_styles() -> None:
         .analysis-copy + .analysis-copy { margin-top: 4px; }
         .st-key-analysis_card .field-row,
         .st-key-analysis_card .badge,
+        .st-key-summary_card .card-title,
+        .st-key-recommendation_card .card-title,
+        .st-key-knowledge_card .card-title,
+        .st-key-tags_card .card-title,
         .st-key-summary_card .analysis-copy,
         .st-key-recommendation_card .analysis-copy,
         .st-key-knowledge_card .analysis-copy,
         .st-key-tags_card .tag-pill {
-            font-size: var(--font-size-ui);
+            font-size: 13px;
         }
         .st-key-summary_card .card-title,
         .st-key-recommendation_card .card-title,
@@ -269,7 +290,7 @@ def inject_styles() -> None:
         .st-key-knowledge_card .analysis-copy {
             color: var(--ink-soft);
             display: block;
-            font-size: var(--font-size-ui);
+            font-size: 13px;
             font-weight: 500;
             line-height: 1.62;
             overflow: visible;
@@ -332,28 +353,33 @@ def inject_styles() -> None:
             margin-top: 7px;
             margin-bottom: 10px;
         }
+        .st-key-conversation_search {
+            margin-bottom: 14px;
+        }
         .st-key-conversation_list_scroll [data-testid="stButton"] {
             margin-top: 6px;
             margin-bottom: 20px;
         }
         .st-key-conversation_list_scroll [data-testid="stButton"] button {
-            background: #FFFFFF !important;
-            border-color: #E3E6EF !important;
+            background: #FFFFFF;
+            border-color: #E3E6EF;
             border-radius: 7px;
-            color: var(--purple-dark) !important;
-            font-family: var(--font-ui) !important;
-            font-size: var(--font-size-ui) !important;
-            font-weight: 650 !important;
-            line-height: 1.2 !important;
-            min-height: 29px;
+            color: var(--purple-dark);
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+                "Segoe UI", sans-serif !important;
+            font-size: 13px !important;
+            font-weight: 400 !important;
+            line-height: 20.8px !important;
+            min-height: 35px;
         }
         .st-key-conversation_list_scroll [data-testid="stButton"] *,
         .st-key-conversation_list_scroll button * {
             color: var(--purple-dark) !important;
-            font-family: var(--font-ui) !important;
-            font-size: var(--font-size-ui) !important;
-            font-weight: 650 !important;
-            line-height: 1.2 !important;
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+                "Segoe UI", sans-serif !important;
+            font-size: 13px !important;
+            font-weight: 400 !important;
+            line-height: 20.8px !important;
         }
         .st-key-chat_thread_scroll ::-webkit-scrollbar,
         .st-key-chat_info_scroll ::-webkit-scrollbar,
@@ -370,7 +396,7 @@ def inject_styles() -> None:
         .nav-item {
             border-radius: 6px;
             color: #34394C;
-            font-size: var(--font-size-ui);
+            font-size: 13px;
             font-weight: 650;
             margin-bottom: 3px;
             padding: 8px 10px;
@@ -394,68 +420,43 @@ def inject_styles() -> None:
     
         [data-testid="stButton"] button,
         [data-testid="stDownloadButton"] button {
-            background: #FFFFFF !important;
-            border-color: var(--border) !important;
+            border-color: var(--border);
             border-radius: 6px;
-            color: #5C38D0 !important;
-            font-family: var(--font-ui) !important;
-            font-size: var(--font-size-ui) !important;
-            font-weight: 700 !important;
-            min-height: 29px;
-        }
-        [data-testid="stButton"] button *,
-        [data-testid="stDownloadButton"] button * {
-            color: inherit !important;
-            font-family: inherit !important;
-            font-size: inherit !important;
-            font-weight: inherit !important;
+            color: var(--ink-soft);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            min-height: 2.25rem;
         }
         [data-testid="stButton"] button:hover,
         [data-testid="stDownloadButton"] button:hover {
-            background: #F8F6FF !important;
-            border-color: var(--purple) !important;
-            color: var(--purple-dark) !important;
+            border-color: var(--purple);
+            color: var(--purple-dark);
         }
         [data-testid="stButton"] button[kind="primary"],
         [data-testid="stDownloadButton"] button[kind="primary"] {
-            background: var(--purple) !important;
-            border-color: var(--purple) !important;
-            color: #FFFFFF !important;
-        }
-        [data-testid="stButton"] button:disabled,
-        [data-testid="stDownloadButton"] button:disabled,
-        [data-testid="stDownloadButton"] [aria-disabled="true"] {
-            background: #F4F5F8 !important;
-            border-color: #E4E7EF !important;
-            color: #A0A5B6 !important;
-            opacity: 1 !important;
+            background: var(--purple);
+            border-color: var(--purple);
+            color: #FFFFFF;
         }
         [data-baseweb="input"] > div,
         [data-baseweb="select"] > div {
-            background: var(--surface) !important;
-            border-color: var(--border) !important;
+            background: var(--surface);
+            border-color: var(--border);
             border-radius: 6px;
-        }
-        .st-key-conversation_mode_filter [data-baseweb="select"] > div,
-        .st-key-conversation_mode_filter [role="combobox"] {
-            background: #FFFFFF !important;
-            color: var(--ink-soft) !important;
-        }
-        .st-key-conversation_mode_filter [data-baseweb="select"] > div,
-        .st-key-conversation_mode_filter [role="combobox"] {
-            height: 30px !important;
-            min-height: 30px !important;
         }
         [data-baseweb="input"] input,
         [data-baseweb="select"] {
             color: var(--ink-soft);
-            font-family: var(--font-ui);
-            font-size: var(--font-size-ui);
+            font-family: inherit;
+            font-size: 13px;
         }
         .st-key-conversation_mode_filter input,
         .st-key-conversation_mode_filter [role="combobox"],
         .st-key-conversation_mode_filter [data-baseweb="select"],
         .st-key-conversation_mode_filter [data-baseweb="select"] *,
+        .st-key-conversation_search input,
+        .st-key-conversation_search input::placeholder,
         [role="listbox"],
         [role="listbox"] *,
         [role="option"],
@@ -463,10 +464,11 @@ def inject_styles() -> None:
         [data-baseweb="menu"] *,
         [data-baseweb="popover"] [role="option"],
         [data-baseweb="popover"] [role="option"] * {
-            font-family: var(--font-ui) !important;
-            font-size: var(--font-size-ui) !important;
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+                "Segoe UI", sans-serif !important;
+            font-size: 13px !important;
             font-weight: 400 !important;
-            line-height: 1.35 !important;
+            line-height: 20.8px !important;
         }
         [data-testid="stFileUploaderDropzone"] {
             background: #FAFBFD;
@@ -479,13 +481,9 @@ def inject_styles() -> None:
         }
         [data-baseweb="tab"] {
             color: var(--muted);
-            font-family: var(--font-ui);
-            font-size: var(--font-size-ui);
+            font-family: inherit;
+            font-size: 13px;
             font-weight: 700;
-            height: 30px;
-            min-height: 30px;
-            padding-bottom: 0;
-            padding-top: 0;
         }
         [aria-selected="true"][data-baseweb="tab"] { color: var(--purple-dark); }
         [data-baseweb="tab-highlight"] { background-color: var(--purple); }
@@ -505,8 +503,27 @@ def inject_styles() -> None:
         [data-testid="stButton"] button,
         [role="button"],
         [role="button"] * {
-            font-family: var(--font-ui) !important;
-            font-size: var(--font-size-ui) !important;
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+                "Segoe UI", sans-serif !important;
+            font-size: 13px !important;
+        }
+        .conv-item-snippet,
+        .msg-content,
+        .analysis-copy,
+        .st-key-summary_card .analysis-copy,
+        .st-key-recommendation_card .analysis-copy,
+        .st-key-knowledge_card .analysis-copy,
+        [role="tab"],
+        [role="tab"] *,
+        [data-testid="stDownloadButton"],
+        [data-testid="stDownloadButton"] *,
+        [data-testid="stButton"] button,
+        [data-testid="stDownloadButton"] button,
+        [data-testid="stDownloadButton"] a,
+        button,
+        [role="button"],
+        [role="button"] * {
+            font-weight: 400 !important;
         }
     
         .st-key-technical_info_card [data-testid="stVerticalBlockBorderWrapper"],
@@ -569,27 +586,25 @@ def inject_styles() -> None:
     
         @media (min-width: 1350px) {
             :root {
-                --mock-sidebar-width: 165px;
+                --mock-sidebar-width: 154px;
                 --content-max-width: 1328px;
             }
             .mock-sidebar { padding: 12px 11px 11px; }
             .block-container { padding-left: 18px; padding-right: 18px; padding-top: 22px; }
-            .page-title { font-size: 26px; }
         }
         @media (max-width: 1100px) {
             :root {
-                --mock-sidebar-width: 140px;
+                --mock-sidebar-width: 122px;
                 --content-max-width: calc(100vw - var(--mock-sidebar-width));
             }
             .mock-sidebar { padding: 12px 9px 10px; }
             .block-container { padding-left: 1rem; padding-right: 1rem; }
-            .page-title { font-size: 20px; }
+            .page-title { font-size: 21px; }
         }
         </style>
         """,
         unsafe_allow_html=True,
     )
-    st.markdown("<style>" + taskbar_css("fixed") + "</style>", unsafe_allow_html=True)
 
 # ----------------------------------------------------------------------------
 # DATA LOADING
@@ -679,28 +694,329 @@ def build_conversation_summaries(df: pd.DataFrame) -> pd.DataFrame:
     summary = pd.DataFrame(records).sort_values("start_time", ascending=False).reset_index(drop=True)
     return summary
 
+def read_env_values() -> dict[str, str]:
+    values: dict[str, str] = {}
+    for env_path in (PROJECT_DIR / ".env", APP_DIR / ".env"):
+        if not env_path.exists():
+            continue
+        for raw_line in env_path.read_text(encoding="utf-8").splitlines():
+            line = raw_line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, value = line.split("=", 1)
+            key = key.strip()
+            if key.startswith("export "):
+                key = key[7:].strip()
+            value = value.strip().strip('"').strip("'")
+            if key and value:
+                values[key] = value
+    return values
 
-def conversation_messages(conv_msgs: pd.DataFrame) -> list[dict[str, str]]:
-    messages: list[dict[str, str]] = []
-    for row in conv_msgs.itertuples():
-        messages.append(
+
+def get_config_value(*names: str, default: str = "") -> str:
+    for name in names:
+        value = os.getenv(name, "").strip()
+        if value:
+            return value
+    env_values = read_env_values()
+    for name in names:
+        value = env_values.get(name, "").strip()
+        if value:
+            return value
+    try:
+        for name in names:
+            value = str(st.secrets.get(name, "")).strip()
+            if value:
+                return value
+    except Exception:
+        pass
+    return default
+
+
+def get_gemini_api_key() -> str:
+    return get_config_value("GEMINI_API_KEY", "GOOGLE_API_KEY")
+
+
+def get_gemini_model() -> str:
+    return get_config_value("GEMINI_MODEL", default=DEFAULT_GEMINI_MODEL)
+
+
+def gemini_key_fingerprint(api_key: str) -> str:
+    if not api_key:
+        return "no-key"
+    return hashlib.sha256(api_key.encode("utf-8")).hexdigest()[:12]
+
+
+def compact_transcript(text: str, max_chars: int = MAX_TRANSCRIPT_CHARS) -> str:
+    text = text.strip()
+    if len(text) <= max_chars:
+        return text
+    head_len = max_chars // 2
+    tail_len = max_chars - head_len
+    return text[:head_len] + "\n\n[... transcript truncated ...]\n\n" + text[-tail_len:]
+
+
+def build_transcript_for_model(messages: pd.DataFrame) -> str:
+    rows = []
+    for row in messages.itertuples():
+        role = "Student" if getattr(row, "role", "") == "student" else "AI Tutor"
+        created_at = getattr(row, "message_created_at", None)
+        time_str = created_at.strftime("%H:%M:%S") if pd.notna(created_at) else ""
+        content = str(getattr(row, "content", "")).strip()
+        if content:
+            rows.append(f"{role} {time_str}:\n{content}")
+    return compact_transcript("\n\n".join(rows))
+
+
+def normalize_string_list(value, fallback: list[str], limit: int) -> list[str]:
+    if isinstance(value, str):
+        items = [value]
+    elif isinstance(value, list):
+        items = value
+    else:
+        items = fallback
+    cleaned = []
+    for item in items:
+        text = str(item).strip()
+        if text and text not in cleaned:
+            cleaned.append(text[:180])
+        if len(cleaned) >= limit:
+            break
+    return cleaned or fallback[:limit]
+
+
+def static_conversation_insights(misconceptions: list[str] | None = None) -> dict:
+    misconception_text = "; ".join(str(item).strip() for item in (misconceptions or []) if str(item).strip())
+    if misconception_text:
+        problem_summary = f"Học viên có dấu hiệu: {misconception_text}. {STATIC_INSIGHT}"
+    else:
+        problem_summary = STATIC_INSIGHT
+    return {
+        "problem_summary": problem_summary,
+        "action_recommendations": STATIC_RECOMMENDATIONS,
+        "knowledge_extraction": STATIC_INSIGHT,
+        "related_tags": STATIC_TAGS,
+        "source": "static",
+    }
+
+
+def strip_json_fence(text: str) -> str:
+    text = text.strip()
+    if text.startswith("```"):
+        text = text.split("\n", 1)[1] if "\n" in text else text
+        if text.endswith("```"):
+            text = text[:-3]
+    return text.strip()
+
+
+def extract_text_from_gemini_response(data) -> str:
+    """Return the final visible model text, skipping Gemini thought parts.
+
+    Gemini 3.x may return more than one part. The old implementation returned
+    the first text part, which can be a thought/debug part instead of the final
+    JSON payload.
+    """
+    if not isinstance(data, dict):
+        return ""
+
+    candidates = data.get("candidates")
+    if isinstance(candidates, list):
+        visible_parts: list[str] = []
+        for candidate in candidates:
+            if not isinstance(candidate, dict):
+                continue
+            parts = candidate.get("content", {}).get("parts", [])
+            if not isinstance(parts, list):
+                continue
+            for part in parts:
+                if not isinstance(part, dict) or part.get("thought") is True:
+                    continue
+                text = part.get("text")
+                if isinstance(text, str) and text.strip():
+                    visible_parts.append(text.strip())
+        if visible_parts:
+            return "\n".join(visible_parts)
+
+    for key in ("output_text", "text"):
+        value = data.get(key)
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+    return ""
+
+
+def parse_gemini_json(text: str) -> dict:
+    """Parse a Gemini JSON response even when it is wrapped in prose/fences."""
+    cleaned = strip_json_fence(text)
+    attempts = [cleaned]
+    start, end = cleaned.find("{"), cleaned.rfind("}")
+    if start >= 0 and end > start:
+        attempts.append(cleaned[start : end + 1])
+
+    last_error: Exception | None = None
+    for candidate in attempts:
+        try:
+            parsed = json.loads(candidate)
+            if isinstance(parsed, dict):
+                return parsed
+            if isinstance(parsed, list) and parsed and isinstance(parsed[0], dict):
+                return parsed[0]
+        except json.JSONDecodeError as exc:
+            last_error = exc
+    raise ValueError(f"Gemini không trả về JSON object hợp lệ: {last_error}")
+
+
+def normalize_conversation_insights(raw: dict, fallback: dict) -> dict:
+    if not isinstance(raw, dict):
+        return fallback
+    problem_summary = str(raw.get("problem_summary") or fallback["problem_summary"]).strip()
+    knowledge_extraction = str(raw.get("knowledge_extraction") or fallback["knowledge_extraction"]).strip()
+    return {
+        "problem_summary": problem_summary[:700] or fallback["problem_summary"],
+        "action_recommendations": normalize_string_list(
+            raw.get("action_recommendations"), fallback["action_recommendations"], 5
+        ),
+        "knowledge_extraction": knowledge_extraction[:700] or fallback["knowledge_extraction"],
+        "related_tags": normalize_string_list(raw.get("related_tags"), fallback["related_tags"], 8),
+        "source": "gemini",
+    }
+
+
+def build_gemini_prompt(
+    conversation_id: str,
+    transcript: str,
+    friction_label: str,
+    severity_label: str,
+    topic: str,
+) -> str:
+    return f"""
+Analyze one AI tutoring conversation for an instructor dashboard.
+Return only JSON that matches the provided schema. All values must be concise Vietnamese.
+Do not invent facts outside the transcript. If evidence is weak, say it carefully.
+
+Conversation ID: {conversation_id}
+Detected friction: {friction_label}
+Severity: {severity_label}
+Topic/source: {topic}
+
+Transcript:
+{transcript}
+""".strip()
+
+
+def get_conversation_insights(
+    conversation_id: str,
+    transcript: str,
+    friction_label: str,
+    severity_label: str,
+    topic: str,
+    misconceptions: list[str],
+    api_key_fingerprint: str,
+    model: str,
+) -> dict:
+    # Keep the fingerprint in the signature so a changed API key produces a new
+    # Streamlit session cache key. Never expose the real key to the UI.
+    del api_key_fingerprint
+
+    api_key = get_gemini_api_key()
+    if not api_key:
+        return {
+            "problem_summary": "Chưa thể phân tích vì ứng dụng chưa đọc được GEMINI_API_KEY.",
+            "action_recommendations": ["Kiểm tra file .env hoặc st.secrets rồi tải lại trang."],
+            "knowledge_extraction": "Chưa có dữ liệu do Gemini API chưa được cấu hình.",
+            "related_tags": ["gemini-config"],
+            "source": "config_error",
+            "error": "Không tìm thấy GEMINI_API_KEY.",
+        }
+    if not transcript.strip():
+        return {
+            "problem_summary": "Hội thoại đang chọn không có nội dung để phân tích.",
+            "action_recommendations": ["Kiểm tra conversation_id và dữ liệu CSV."],
+            "knowledge_extraction": "Không có transcript.",
+            "related_tags": ["empty-transcript"],
+            "source": "input_error",
+            "error": "Transcript rỗng.",
+        }
+
+    fallback = static_conversation_insights(misconceptions)
+    payload = {
+        "systemInstruction": {
+            "parts": [
+                {"text": "You convert tutoring transcripts into compact JSON insights for teachers."}
+            ]
+        },
+        "contents": [
             {
-                "role": str(getattr(row, "role", "unknown")),
-                "content": str(getattr(row, "content", "")),
-                "turn_id": str(getattr(row, "turn_id", "")),
+                "role": "user",
+                "parts": [
+                    {"text": build_gemini_prompt(conversation_id, transcript, friction_label, severity_label, topic)}
+                ],
             }
-        )
-    return messages
+        ],
+        "generationConfig": {
+            # Gemini 3.5 no longer needs the deprecated sampling setting here.
+            "responseMimeType": "application/json",
+            "responseSchema": GEMINI_INSIGHT_SCHEMA,
+            "maxOutputTokens": 1400,
+        },
+    }
+    request = urllib.request.Request(
+        GEMINI_API_URL_TEMPLATE.format(model=model),
+        data=json.dumps(payload, ensure_ascii=False).encode("utf-8"),
+        headers={
+            "Content-Type": "application/json; charset=utf-8",
+            "x-goog-api-key": api_key,
+        },
+        method="POST",
+    )
+
+    try:
+        with urllib.request.urlopen(request, timeout=30) as response:
+            response_body = response.read().decode("utf-8")
+        data = json.loads(response_body)
+        text = extract_text_from_gemini_response(data)
+        if not text:
+            raise ValueError("Gemini response không có phần text hiển thị.")
+        parsed = parse_gemini_json(text)
+        result = normalize_conversation_insights(parsed, fallback)
+        result["model"] = model
+        return result
+    except urllib.error.HTTPError as exc:
+        try:
+            detail = exc.read().decode("utf-8", errors="replace")
+        except Exception:
+            detail = str(exc)
+        error_text = f"HTTP {exc.code}: {detail[:600]}"
+    except urllib.error.URLError as exc:
+        error_text = f"Không kết nối được Gemini API: {exc.reason}"
+    except (json.JSONDecodeError, TimeoutError, ValueError) as exc:
+        error_text = str(exc)
+    except Exception as exc:
+        error_text = f"Lỗi Gemini không xác định: {type(exc).__name__}: {exc}"
+
+    # Do not silently pretend that fixed demo text came from Gemini. The error is
+    # now visible in the UI and the four cards clearly show analysis failure.
+    return {
+        "problem_summary": "Gemini đã được gọi nhưng kết quả chưa thể đưa vào giao diện.",
+        "action_recommendations": [
+            "Mở phần Chi tiết lỗi Gemini bên dưới để xem response thực tế.",
+            "Sau khi sửa cấu hình, tải lại trang để chạy lại phân tích.",
+        ],
+        "knowledge_extraction": "Không sử dụng nội dung demo cố định vì lần gọi Gemini này thất bại.",
+        "related_tags": ["gemini-error", model],
+        "source": "api_error",
+        "error": error_text[:900],
+        "model": model,
+    }
+
+
+def html_copy(value: str) -> str:
+    return html.escape(str(value)).replace("\n", "<br>")
 
 
 def render(pipeline_mode: str = "Static demo") -> None:
-    # ----------------------------------------------------------------------------
-    # FIXED LEFT TASKBAR - shared component
-    # ----------------------------------------------------------------------------
     inject_styles()
     uploaded = None
-    render_taskbar("conversations", pipeline_mode)
-    
+
     # ----------------------------------------------------------------------------
     # LOAD DATA
     # ----------------------------------------------------------------------------
@@ -732,7 +1048,7 @@ def render(pipeline_mode: str = "Static demo") -> None:
         )
         if sel_row is not None and pd.notna(sel_row["start_time"]):
             header_line += (
-                f'<span class="header-meta">'
+                f'<span style="color:#8F96AA;font-size:13px;margin-left:10px;">'
                 f'{sel_row["start_time"].strftime("%H:%M %p · %d/%m/%Y")}</span>'
             )
         st.markdown(header_line, unsafe_allow_html=True)
@@ -769,10 +1085,16 @@ def render(pipeline_mode: str = "Static demo") -> None:
             label_visibility="collapsed",
             key="conversation_mode_filter",
         )
+        search = st.text_input("Tìm kiếm…", label_visibility="collapsed", placeholder="🔎 Tìm kiếm…", key="conversation_search")
     
         filtered = summaries.copy()
         if mode_filter != "Tất cả mức độ":
             filtered = filtered[filtered["friction_type"] == mode_filter]
+        if search:
+            filtered = filtered[
+                filtered["snippet"].str.contains(search, case=False, na=False)
+                | filtered["conversation_id"].str.contains(search, case=False, na=False)
+            ]
     
         with st.container(height=CONVERSATION_LIST_HEIGHT, border=False, key="conversation_list_scroll"):
             for _, row in filtered.iterrows():
@@ -786,7 +1108,7 @@ def render(pipeline_mode: str = "Static demo") -> None:
                         <div class="conv-item {'conv-item-selected' if selected else ''}">
                             <div style="display:flex;justify-content:space-between;">
                                 <span class="conv-item-title">#{row['conversation_id']}</span>
-                                <span class="badge" style="color:{fg};background:{bg};">{label}</span>
+                                <span class="badge" style="color:{fg};background:{bg};font-size:11px;">{label}</span>
                             </div>
                             <div class="conv-item-time">{time_str}</div>
                             <div class="conv-item-snippet">{row['snippet']}</div>
@@ -855,92 +1177,63 @@ def render(pipeline_mode: str = "Static demo") -> None:
     # --- COLUMN 3: AI analysis --------------------------------------------------
     with col_analysis:
         if sel_row is not None:
-            conversation_id = str(st.session_state.selected_conv)
             friction_label, friction_fg, friction_bg = FRICTION_LABELS.get(
                 sel_row["friction_type"], FRICTION_LABELS["normal"]
             )
-            analysis_cache = st.session_state.setdefault("gemini_analysis_cache", {})
-            analysis = analysis_cache.get(conversation_id)
-            has_gemini_result = analysis is not None
-            api_key = resolve_api_key(st.secrets)
+            # Placeholder severity (not present in source CSV yet)
+            severity_key = "high" if sel_row["friction_type"] in ("learning_difficulty", "tutor_limitation") else "low"
+            severity_label, severity_fg, severity_bg = SEVERITY_LABELS[severity_key]
+    
+            selected_messages = df[df["conversation_id"] == st.session_state.selected_conv].sort_values("_row_order")
+            transcript_for_model = build_transcript_for_model(selected_messages)
+            misconceptions = sel_row["misconceptions"] if isinstance(sel_row["misconceptions"], list) else []
+            gemini_key = get_gemini_api_key()
+            gemini_model = get_gemini_model()
+            conv_id = str(st.session_state.selected_conv)
+            cache_seed = "|".join(
+                [conv_id, gemini_model, gemini_key_fingerprint(gemini_key), transcript_for_model]
+            )
+            insight_cache_key = "gemini_result_" + hashlib.sha256(
+                cache_seed.encode("utf-8")
+            ).hexdigest()[:20]
 
-            if has_gemini_result:
-                severity_key = str(analysis.get("severity", "low"))
-                if severity_key not in SEVERITY_LABELS:
-                    severity_key = "low"
-                severity_label, severity_fg, severity_bg = SEVERITY_LABELS[severity_key]
-                root_cause = ROOT_CAUSE_LABELS.get(
-                    str(analysis.get("root_cause", "uncertain")),
-                    ROOT_CAUSE_LABELS["uncertain"],
-                )
+            if insight_cache_key not in st.session_state:
+                with st.spinner("Đang phân tích hội thoại bằng Gemini..."):
+                    st.session_state[insight_cache_key] = get_conversation_insights(
+                        conv_id,
+                        transcript_for_model,
+                        friction_label,
+                        severity_label,
+                        str(sel_row["day_code"]),
+                        misconceptions,
+                        gemini_key_fingerprint(gemini_key),
+                        gemini_model,
+                    )
+            insights = st.session_state[insight_cache_key]
+
+            if insights.get("source") != "gemini":
+                st.error("Gemini chưa trả được dữ liệu hợp lệ cho bốn khung bên dưới.")
+                with st.expander("Chi tiết lỗi Gemini", expanded=True):
+                    st.code(insights.get("error", "Không có chi tiết lỗi."), language="text")
     
             with st.container(border=True, key="analysis_card", gap=None):
                 st.markdown('<div class="card-title">Phân tích của AI</div>', unsafe_allow_html=True)
-                analyze_clicked = st.button(
-                    "Phân tích lại bằng Gemini" if has_gemini_result else "Phân tích bằng Gemini",
-                    key=f"gemini_analyze_{conversation_id}",
-                    type="primary",
-                    disabled=not bool(api_key),
-                    width="stretch",
-                )
-                if analyze_clicked and api_key:
-                    try:
-                        with st.spinner("Gemini đang đối chiếu hội thoại và transcript…"):
-                            analysis = analyze_conversation(
-                                conversation_id=conversation_id,
-                                fixed_category=str(sel_row["friction_type"]),
-                                messages=conversation_messages(conv_msgs),
-                                api_key=api_key,
-                            )
-                        analysis_cache[conversation_id] = analysis
-                        has_gemini_result = True
-                        severity_key = str(analysis["severity"])
-                        severity_label, severity_fg, severity_bg = SEVERITY_LABELS[severity_key]
-                        root_cause = ROOT_CAUSE_LABELS.get(
-                            str(analysis["root_cause"]),
-                            ROOT_CAUSE_LABELS["uncertain"],
-                        )
-                        st.toast("Đã phân tích bằng Gemini.", icon=":material/check_circle:")
-                    except GeminiAnalysisError as exc:
-                        st.error(str(exc), icon=":material/error:")
-
-                if not api_key:
-                    st.caption("Chưa có GEMINI_API_KEY; chưa thể tạo kết quả phân tích AI.")
-                elif has_gemini_result:
-                    st.caption("Kết quả Gemini đã được cache cho hội thoại này.")
-                else:
-                    st.caption(
-                        "Chưa có kết quả AI. Nhấn nút để phân tích hội thoại bằng Gemini."
-                    )
-
                 st.markdown(
                     f'<div class="field-row"><span class="field-label">Loại friction</span>'
                     f'<span class="badge" style="color:{friction_fg};background:{friction_bg};">{friction_label}</span></div>',
                     unsafe_allow_html=True,
                 )
-                if has_gemini_result:
-                    st.markdown(
-                        f'<div class="field-row"><span class="field-label">Mức độ</span>'
-                        f'<span class="badge" style="color:{severity_fg};background:{severity_bg};">{severity_label}</span></div>',
-                        unsafe_allow_html=True,
-                    )
-                    st.markdown(
-                        f'<div class="field-row"><span class="field-label">Chủ đề</span>'
-                        f'<span class="badge" style="color:#6747EA;background:#F0ECFF;">'
-                        f'{html.escape(str(analysis.get("topic", "Chưa xác định")))}</span></div>',
-                        unsafe_allow_html=True,
-                    )
-                    st.markdown(
-                        f'<div class="field-row"><span class="field-label">Nguyên nhân</span>'
-                        f'<span class="field-value">{html.escape(root_cause)}</span></div>',
-                        unsafe_allow_html=True,
-                    )
-                    confidence_text = f'{float(analysis.get("confidence", 0.0)) * 100:.0f}%'
-                    st.markdown(
-                        f'<div class="field-row"><span class="field-label">Độ tin cậy</span>'
-                        f'<span class="field-value">{confidence_text}</span></div>',
-                        unsafe_allow_html=True,
-                    )
+                st.markdown(
+                    f'<div class="field-row"><span class="field-label">Mức độ</span>'
+                    f'<span class="badge" style="color:{severity_fg};background:{severity_bg};">{severity_label}</span></div>',
+                    unsafe_allow_html=True,
+                )
+    
+                st.markdown(
+                    f'<div class="field-row"><span class="field-label">Chủ đề</span>'
+                    f'<span class="badge" style="color:#6747EA;background:#F0ECFF;">{sel_row["day_code"]}</span></div>',
+                    unsafe_allow_html=True,
+                )
                 st.markdown(
                     f'<div class="field-row"><span class="field-label">Thời gian bắt đầu</span>'
                     f'<span class="field-value">{sel_row["start_time"].strftime("%H:%M:%S") if pd.notna(sel_row["start_time"]) else "-"}</span></div>',
@@ -957,55 +1250,43 @@ def render(pipeline_mode: str = "Static demo") -> None:
                     unsafe_allow_html=True,
                 )
     
-            if has_gemini_result:
-                with st.container(border=True, key="summary_card", gap="xsmall"):
-                    st.markdown('<div class="card-title">📝 Tóm tắt vấn đề</div>', unsafe_allow_html=True)
+            # Dynamic insight cards. Gemini fills these when GEMINI_API_KEY is set;
+            # otherwise the app keeps the static fallback so the demo never breaks.
+            with st.container(border=True, key="summary_card", gap="small"):
+                st.markdown('<div class="card-title">📝 Tóm tắt vấn đề</div>', unsafe_allow_html=True)
+                st.markdown(
+                    f"<div class='analysis-copy'>{html_copy(insights.get('problem_summary', ''))}</div>",
+                    unsafe_allow_html=True,
+                )
+    
+            with st.container(border=True, key="recommendation_card", gap="small"):
+                st.markdown(
+                    '<div class="card-title" style="color:#C76A25;">💡 Khuyến nghị hành động</div>',
+                    unsafe_allow_html=True,
+                )
+                for rec in insights.get("action_recommendations", []):
                     st.markdown(
-                        f"<div class='analysis-copy'>"
-                        f"{html.escape(str(analysis.get('summary', '')))}</div>",
+                        f"<div class='analysis-copy'>• {html_copy(rec)}</div>",
                         unsafe_allow_html=True,
                     )
-
-                with st.container(border=True, key="recommendation_card", gap="xsmall"):
-                    st.markdown(
-                        '<div class="card-title" style="color:#C76A25;">💡 Khuyến nghị hành động</div>',
-                        unsafe_allow_html=True,
-                    )
-                    for rec in analysis.get("recommendations", []):
-                        st.markdown(
-                            f"<div class='analysis-copy'>• {html.escape(str(rec))}</div>",
-                            unsafe_allow_html=True,
-                        )
-
-                with st.container(border=True, key="knowledge_card", gap="xsmall"):
-                    st.markdown(
-                        '<div class="card-title" style="color:#6747EA;">📚 Bằng chứng transcript</div>',
-                        unsafe_allow_html=True,
-                    )
-                    evidence = analysis.get("evidence", [])
-                    if evidence:
-                        for item in evidence:
-                            segment_id = html.escape(str(item.get("segment_id", "")))
-                            excerpt = html.escape(str(item.get("text", ""))[:280])
-                            st.markdown(
-                                f"<div class='analysis-copy'><b>[{segment_id}]</b> {excerpt}</div>",
-                                unsafe_allow_html=True,
-                            )
-                    else:
-                        st.markdown(
-                            "<div class='analysis-copy'>Gemini không chọn được đoạn transcript "
-                            "phù hợp cho kết quả này.</div>",
-                            unsafe_allow_html=True,
-                        )
-
-                with st.container(border=True, key="tags_card", gap="xsmall"):
-                    st.markdown('<div class="card-title">🏷️ Tag liên quan</div>', unsafe_allow_html=True)
-                    tags_html = "".join(
-                        f'<span class="tag-pill">{html.escape(str(tag))}</span>'
-                        for tag in analysis.get("tags", [])
-                    )
-                    if tags_html:
-                        st.markdown(tags_html, unsafe_allow_html=True)
+                st.button("Xem gợi ý chi tiết →", key="rec_btn")
+    
+            with st.container(border=True, key="knowledge_card", gap="small"):
+                st.markdown(
+                    '<div class="card-title" style="color:#6747EA;">📚 Trích xuất kiến thức</div>',
+                    unsafe_allow_html=True,
+                )
+                st.markdown(
+                    f"<div class='analysis-copy'>{html_copy(insights.get('knowledge_extraction', ''))}</div>",
+                    unsafe_allow_html=True,
+                )
+    
+            with st.container(border=True, key="tags_card", gap="small"):
+                st.markdown('<div class="card-title">🏷️ Tag liên quan</div>', unsafe_allow_html=True)
+                tags_html = "".join(
+                    f'<span class="tag-pill">{html_copy(tag)}</span>' for tag in insights.get("related_tags", [])
+                )
+                st.markdown(tags_html + '<span class="tag-pill">+</span>', unsafe_allow_html=True)
 
 
 def main() -> None:

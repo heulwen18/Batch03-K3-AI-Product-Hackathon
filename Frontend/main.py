@@ -7,7 +7,6 @@ import dashboard
 import report
 from shared_taskbar import get_active_page, render_taskbar, taskbar_css
 
-
 st.set_page_config(
     page_title="AI Learning Analytics Copilot",
     page_icon="✦",
@@ -61,19 +60,21 @@ def render_placeholder(page: str) -> None:
         """,
         unsafe_allow_html=True,
     )
-    st.markdown("<style>" + taskbar_css("fixed") + "</style>", unsafe_allow_html=True)
-    render_taskbar(page, "Static demo")
     st.markdown(f'<span class="page-title">{page.title()}</span>', unsafe_allow_html=True)
     st.info("Màn này chưa được triển khai. Thêm page trong main.py và item trong shared_taskbar.py khi cần.")
 
 
 def main() -> None:
     page = get_active_page(default="dashboard")
+    pipeline_mode = "Static demo"
+
+    st.markdown("<style>" + taskbar_css("fixed") + "</style>", unsafe_allow_html=True)
+    render_taskbar(page, pipeline_mode)
 
     if page == "dashboard":
         dashboard.render()
     elif page == "conversations":
-        conversations.render()
+        conversations.render(pipeline_mode)
     elif page == "reports":
         report.render()
     else:
