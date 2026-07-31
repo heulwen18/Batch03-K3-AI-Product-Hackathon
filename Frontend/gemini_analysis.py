@@ -137,10 +137,15 @@ def _read_dotenv_value(name: str) -> str | None:
 def resolve_api_key(secrets: Mapping[str, Any] | None = None) -> str | None:
     """Resolve the key without ever logging or returning its source."""
     if secrets is not None:
-        for name in ("GEMINI_API_KEY", "GOOGLE_API_KEY"):
-            value = str(secrets.get(name, "")).strip()
-            if value:
-                return value
+        try:
+            for name in ("GEMINI_API_KEY", "GOOGLE_API_KEY"):
+                value = str(secrets.get(name, "")).strip()
+                if value:
+                    return value
+        except FileNotFoundError:
+            # Streamlit raises StreamlitSecretNotFoundError (a FileNotFoundError)
+            # when the app is launched from a directory without secrets.toml.
+            pass
 
     for name in ("GEMINI_API_KEY", "GOOGLE_API_KEY"):
         value = os.getenv(name, "").strip() or (_read_dotenv_value(name) or "")
