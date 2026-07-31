@@ -155,9 +155,11 @@ def taskbar_css(position: Literal["fixed", "sticky"] = "fixed") -> str:
         text-decoration: none;
         font-size: 13px;
         font-weight: 750;
+        white-space: nowrap;
     }}
     .mock-nav a span {{
         width: 11px;
+        flex: 0 0 11px;
         display: inline-grid;
         place-items: center;
         color: #141827;

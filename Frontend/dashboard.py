@@ -1068,6 +1068,7 @@ def inject_styles() -> None:
           --border: #E8EBF3;
           --purple: #7557F6;
           --canvas: #F6F7FB;
+          --mock-sidebar-width: 154px;
         }
         * { box-sizing: border-box; }
         html, body, .stApp,
@@ -1355,6 +1356,7 @@ def inject_styles() -> None:
           padding: 16px; background: white; border: 1px solid var(--border); border-radius: 10px;
         }
         @media (min-width: 1350px) {
+          :root { --mock-sidebar-width: 165px; }
           .dashboard-main { padding: 22px 28px 14px; }
           .app-shell { grid-template-columns: var(--mock-sidebar-width, 154px) minmax(0, 1fr); }
           .metric-card { height: 126px; }
@@ -1368,6 +1370,7 @@ def inject_styles() -> None:
           .page-title h1 { font-size: 22px; }
         }
         @media (max-width: 960px) {
+          :root { --mock-sidebar-width: 140px; }
           .app-shell { grid-template-columns: var(--mock-sidebar-width, 122px) minmax(0, 1fr); }
           .dashboard-main { padding: 12px; }
           .metric-grid { grid-template-columns: repeat(2, 1fr); }

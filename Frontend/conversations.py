@@ -71,7 +71,7 @@ def inject_styles() -> None:
             --success: #23C980;
             --success-text: #2D7354;
             --success-soft: #DDF5E9;
-            --mock-sidebar-width: 144px;
+            --mock-sidebar-width: 154px;
             --content-max-width: 1288px;
             --font-ui: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
                 "Segoe UI", sans-serif;
@@ -560,7 +560,7 @@ def inject_styles() -> None:
     
         @media (min-width: 1350px) {
             :root {
-                --mock-sidebar-width: 154px;
+                --mock-sidebar-width: 165px;
                 --content-max-width: 1328px;
             }
             .mock-sidebar { padding: 12px 11px 11px; }
@@ -569,7 +569,7 @@ def inject_styles() -> None:
         }
         @media (max-width: 1100px) {
             :root {
-                --mock-sidebar-width: 122px;
+                --mock-sidebar-width: 140px;
                 --content-max-width: calc(100vw - var(--mock-sidebar-width));
             }
             .mock-sidebar { padding: 12px 9px 10px; }
