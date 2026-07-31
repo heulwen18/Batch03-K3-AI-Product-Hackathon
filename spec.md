@@ -105,7 +105,7 @@ Loại: [ ] Tối ưu tính năng có sẵn  [x] Tính năng mới
 |---|---|---|---|---|
 | 1 | AI đặt tên cụm tự "sáng tác" số liệu (%/case_count) | ① | Số do Python tính sẵn, AI chỉ nhận danh sách cụm đã có số — schema tool ép trả đúng `cluster_id` | G10 |
 | 2 | AI kết luận "giảng viên chưa dạy X" trong khi chỉ là không có trong 6 buổi được cấp | ① | Rationale bắt buộc viết "trong 6 buổi được cấp, có thể đã dạy buổi khác" — không khẳng định tuyệt đối | G2, G11 |
-| 3 | Tutor demo bịa câu trả lời từ kiến thức nền khi transcript không có | ① | Từ chối trung thực + chỉ sang giảng viên/TA; đã test live 30/07 | G10 |
+| 3 | Tutor demo bịa câu trả lời từ kiến thức nền khi transcript không có (kể cả bịa mã trích dẫn) | ① | HAI lớp bảo vệ: prompt cấm + **grounding guard rule-based** (có tra cứu mà best match < 0.5 → buộc từ chối). Guard thêm sau khi golden set lượt 4 bắt được model vượt prompt (bịa mã T04-006) | G10 |
 | 4 | Ngày chỉ có 5–11 hội thoại, % không đáng tin | ② | Tự hiện cảnh báo "mẫu quá nhỏ (< 20), độ tin cậy thấp" — vẫn hiện số, không giấu | G2 |
 | 5 | Cụm chỉ 1–2 case được đặt tên nghe như xu hướng cả lớp | ② | Model phải trả `low_confidence_note`; bảng luôn hiện case_count bên cạnh tên | G2 |
 | 6 | Học viên hỏi cụt ("PRD?", "giải thích đi") không đủ ngữ cảnh | ② | Tutor hỏi lại 1 câu để làm rõ thay vì đoán | G10 |
@@ -158,7 +158,10 @@ Loại: [ ] Tối ưu tính năng có sẵn  [x] Tính năng mới
   |---|---|---|---|---|
   | Smoke test tay | 2026-07-30 | 5/5 | — | 3 kịch bản tutor + 2 ngày phân tích AI — chưa phải lượt golden set chính thức |
   | Lượt 1 (offline) | 2026-07-30 | 16/17 | 94% | **GS15 FAIL** — "bạn là model ai nào vậy" không được gắn intent_drift (regex META quá hẹp, dạng câu có thật trong chatlog). 5 case AI skip |
-  | Lượt 2 (full, sau khi sửa META_RE) | 2026-07-30 | 22/22 | 100% | **ĐẠT quality bar** — lớp ① sạch (GS11 từ chối trung thực, GS12 không bịa cụm/không đổi số) |
+  | Lượt 2 (full, sau khi sửa META_RE) | 2026-07-30 | 22/22 | 100% | **ĐẠT quality bar** — lớp ① sạch |
+  | Lượt 3 (offline, sau khi refactor UI 4 trang) | 2026-07-31 | 17/17 | 100% | Xác nhận refactor không phá rule-based/UI; case AI skip |
+  | Lượt 4 (full) | 2026-07-31 | 21/22 | 95% | **GS11 FAIL — CHƯA ĐẠT bar** (vi phạm điều kiện cứng lớp ①): tutor tự giải thích "Proof of Stake" từ kiến thức nền + **bịa mã trích dẫn T04-006** dù best match chỉ 25-33% — model flaky, prompt đơn thuần không đủ chặn |
+  | Lượt 5 (full, sau khi thêm grounding guard) | 2026-07-31 | 22/22 | 100% | **ĐẠT quality bar** — guard rule-based trong `agent_tutor.py`: có tra cứu mà best match < 0.5 → buộc từ chối trung thực; đã kiểm chứng không chặn nhầm câu hỏi hợp lệ (best match 1.0 vẫn trả lời bình thường) |
 
 ## §8. Phân công & kế hoạch
 
@@ -189,3 +192,5 @@ Loại: [ ] Tối ưu tính năng có sẵn  [x] Tính năng mới
 | 2026-07-30 | Retrieval nâng lên BM25; thêm tín hiệu "tự nói không hiểu"; cache kết quả AI theo ngày; biểu đồ xu hướng; panel nguồn trích dẫn | Keyword-overlap thô xếp hạng kém; tiết kiệm quota (mỗi ngày 1 lời gọi); tăng khả năng tự kiểm chứng (G11) |
 | 2026-07-30 | Bỏ chế độ dry-run khỏi UI (giữ ở CLI cho dev) | Người dùng thật (giảng viên) không cần khái niệm dry-run — giảm 1 quyết định thừa trên giao diện |
 | 2026-07-30 | Mở rộng `META_RE` trong `signals.py` (bắt "bạn là model ai nào", "bạn dùng model llm gì") | Golden set lượt 1 case GS15 FAIL — regex cũ quá hẹp, miss dạng câu meta có thật trong chatlog; sửa xong chạy lại trọn bộ 22/22 pass |
+| 2026-07-31 | Tái cấu trúc UI thành 4 trang sidebar (Live Dashboard / Conversations / Reports / Chat) + gom dữ liệu theo TUẦN, không giới hạn số buổi; bỏ chú thích phương pháp khỏi mặt giao diện (chuyển thành tooltip); mọi insight hiện kèm số hội thoại gốc | Feedback validation V01-V05: 4/5 muốn số hội thoại gốc đi kèm insight (P0), 3/5 muốn giải thích cách tính chỉ số (→ tooltip), 2/5 thấy giao diện nhiều chữ; mockup UI nhóm chốt |
+| 2026-07-31 | Thêm grounding guard vào `agent_tutor.py` (best match < 0.5 → buộc từ chối) | Golden set lượt 4 case GS11 FAIL — model vượt prompt, tự giải thích "Proof of Stake" + bịa mã trích dẫn; lượt 5 chạy lại 22/22 ĐẠT |

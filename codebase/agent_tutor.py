@@ -9,12 +9,35 @@ Vòng lặp ReAct: model tự quyết định gọi tool search_transcript (tố
 Dùng Groq (OpenAI-compatible tool-calling) qua llm_client.py.
 """
 import json
+import re
 
 from transcript_index import search as transcript_search
 from llm_client import get_client, to_function_tool, create_with_retry, DEFAULT_MODEL
 
 MODEL = DEFAULT_MODEL
 MAX_TOOL_ROUNDS = 2  # giới hạn để demo live không bị treo / không tốn quota vô hạn
+
+# GUARD chống bịa (rule-based, không tin prompt 100%): nếu agent CÓ tra cứu mà độ khớp tốt nhất
+# vẫn dưới ngưỡng này thì câu trả lời bị thay bằng lời từ chối trung thực — bắt được case model
+# vẫn tự giải thích từ kiến thức nền + bịa mã trích dẫn (golden set GS11 từng fail kiểu này:
+# hỏi "Proof of Stake" ngoài tài liệu, best match chỉ 0.25-0.33 mà model vẫn trả lời + cite bừa).
+# Ngưỡng 0.5 khớp RETRIEVAL_BUG_THRESHOLD; đo thực tế: câu trả lời được đều có best match >= 0.67.
+GROUNDING_THRESHOLD = 0.5
+REFUSAL_RE = re.compile(r"(không tìm thấy|chưa tìm thấy|không có trong|không đủ căn cứ|ngoài phạm vi)", re.I)
+
+
+def _grounding_guard(answer, tool_calls_log, source_label):
+    """Trả về answer nguyên vẹn nếu đủ căn cứ; ngược lại thay bằng từ chối trung thực."""
+    if not tool_calls_log:            # không tra cứu gì (chào hỏi/ngoài phạm vi) — model tự xử lý
+        return answer
+    best = max((r["match_ratio"] for call in tool_calls_log for r in call["results"]), default=0.0)
+    if best >= GROUNDING_THRESHOLD or REFUSAL_RE.search(answer or ""):
+        return answer
+    return (
+        f"Mình không tìm thấy nội dung này trong {source_label} (độ khớp tra cứu quá thấp, "
+        f"tốt nhất chỉ {best:.0%}) — có thể chủ đề này chưa được dạy trong tài liệu mình có. "
+        "Bạn nên hỏi lại giảng viên/TA để chắc chắn nhé."
+    )
 
 SEARCH_TOOL = to_function_tool(
     "search_transcript",
@@ -46,6 +69,8 @@ Quy tắc bắt buộc:
   trung thực "Mình không tìm thấy nội dung này trong {source_label} — có thể đã dạy/trình bày ở \
   chỗ khác, bạn nên hỏi lại giảng viên/TA để chắc chắn." KHÔNG bịa câu trả lời từ kiến thức nền chung.
 - Nếu tìm thấy (match_ratio đủ cao): trả lời ngắn gọn (2-4 câu), TRÍCH DẪN mã đoạn đã dùng.
+- TUYỆT ĐỐI KHÔNG trích mã đoạn mà nội dung đoạn không thực sự chứa câu trả lời. match_ratio < 0.5 \
+  nghĩa là KHÔNG đủ căn cứ — phải từ chối, kể cả khi bạn biết câu trả lời từ kiến thức nền.
 - Câu hỏi ngoài phạm vi tài liệu (hỏi về bản thân bạn, thời tiết, chào hỏi xã giao...): trả lời \
   ngắn gọn rằng đây ngoài phạm vi hỗ trợ, không cần gọi tool."""
 
@@ -67,7 +92,8 @@ def _tool_calls_to_dict(tool_calls):
     ]
 
 
-def run_turn(index, history, user_message, api_key=None, model=MODEL, system_prompt=None):
+def run_turn(index, history, user_message, api_key=None, model=MODEL, system_prompt=None,
+             source_label="tài liệu được cấp"):
     """history: list message (role/content, KHÔNG gồm system) của các lượt TRƯỚC.
 
     system_prompt: mặc định None -> dùng SYSTEM_PROMPT (nguồn = 6 buổi giảng). Truyền
@@ -95,8 +121,9 @@ def run_turn(index, history, user_message, api_key=None, model=MODEL, system_pro
         msg = resp.choices[0].message
 
         if not msg.tool_calls:
-            messages.append({"role": "assistant", "content": msg.content})
-            return msg.content or "", tool_calls_log, messages
+            answer = _grounding_guard(msg.content or "", tool_calls_log, source_label)
+            messages.append({"role": "assistant", "content": answer})
+            return answer, tool_calls_log, messages
 
         messages.append({"role": "assistant", "content": msg.content, "tool_calls": _tool_calls_to_dict(msg.tool_calls)})
         for tc in msg.tool_calls:
@@ -117,8 +144,9 @@ def run_turn(index, history, user_message, api_key=None, model=MODEL, system_pro
         messages=[{"role": "system", "content": system_prompt}] + messages,
     )
     msg = resp.choices[0].message
-    messages.append({"role": "assistant", "content": msg.content})
     final_text = msg.content or "Mình cần thêm thông tin để trả lời chắc chắn — bạn hỏi lại rõ hơn giúp mình nhé?"
+    final_text = _grounding_guard(final_text, tool_calls_log, source_label)
+    messages.append({"role": "assistant", "content": final_text})
     return final_text, tool_calls_log, messages
 
 

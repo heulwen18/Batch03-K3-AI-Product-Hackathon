@@ -31,7 +31,8 @@ results = []   # (id, layer_or_group, passed, note, raw_output_or_None)
 
 def record(case_id, group, passed, note, raw=None):
     results.append((case_id, group, passed, note, raw))
-    print(f"  {'✅ PASS' if passed else '❌ FAIL'}  {case_id} — {note}")
+    icon = "⏭️ SKIP" if passed is None else ("✅ PASS" if passed else "❌ FAIL")
+    print(f"  {icon}  {case_id} — {note}")
 
 
 def sig_of(by_day, date, conv_id):
@@ -76,15 +77,17 @@ def main():
     # ---------- Nhóm B — chỗ khó ----------
     print("\n[Nhóm B — chỗ khó]")
 
-    # GS13 (②): ngày < 20 hội thoại -> UI hiện cảnh báo mẫu nhỏ
+    # GS13 (②): ngày < 20 hội thoại -> UI hiện cảnh báo mẫu nhỏ (trang Live Dashboard)
     try:
         from streamlit.testing.v1 import AppTest
-        at = AppTest.from_file(str(ROOT / "codebase" / "app.py"), default_timeout=120)
+        at = AppTest.from_file(str(ROOT / "codebase" / "app_pages" / "live_dashboard.py"), default_timeout=120)
         at.run()
-        dash_sel = [sb for sb in at.tabs[1].selectbox if sb.key == "dash_date"]
-        dash_sel[0].set_value("2026-07-25")
+        week_opt = [o for o in at.selectbox(key="ld_week").options if "Tuần 30" in o][0]
+        at.selectbox(key="ld_week").set_value(week_opt)
         at.run()
-        warnings = " ".join(w.value for w in at.tabs[1].warning)
+        at.selectbox(key="ld_day").set_value("2026-07-25")
+        at.run()
+        warnings = " ".join(w.value for w in at.warning)
         ok = "mẫu quá nhỏ" in warnings or "tin cậy thấp" in warnings
         record("GS13", "②", ok, f"cảnh báo mẫu nhỏ {'có' if ok else 'KHÔNG'} xuất hiện (ngày 7 hội thoại)")
     except Exception as e:

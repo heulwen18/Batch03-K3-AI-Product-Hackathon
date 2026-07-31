@@ -1,8 +1,13 @@
-# VLearn — AI Tutor & Class Insight
+# AI Learning Analytics Copilot
 
 Web app duy nhất (Streamlit, chạy local) gồm 2 phía của cùng một vòng lặp dữ liệu:
 **học viên chat với AI Tutor** → hội thoại được ghi lại → **giảng viên/TA xem dashboard**
 để biết cả lớp đang vướng ở khái niệm nào và nên làm gì tiếp.
+
+Điều hướng sidebar 4 trang: **📡 Live Dashboard** (KPI + top vấn đề + khuyến nghị) ·
+**💬 Conversations** (đọc nguyên văn + phân tích từng hội thoại) · **📑 Reports** (tổng hợp
+theo tuần, so sánh tuần trước, xuất báo cáo) · **🎓 Chat AI Tutor**. Dữ liệu gom theo **tuần**
+— không giới hạn số buổi, data thêm ngày/tuần mới sẽ tự xuất hiện.
 
 ```bash
 pip install -r requirements.txt
@@ -94,17 +99,23 @@ và prompt của tutor không phải đổi.
 ## Cấu trúc thư mục
 
 ```text
-app.py               -- ENTRY POINT: 1 web Streamlit, 3 tab (chat / dashboard / nhật ký)
+app.py               -- ENTRY POINT: st.navigation sidebar 4 trang
+app_pages/
+  live_dashboard.py  -- 📡 KPI theo tuần/ngày, friction theo ngày, top vấn đề, khuyến nghị AI
+  conversations.py   -- 💬 danh sách hội thoại (lọc tuần/ngày/nhóm/tìm kiếm) + transcript + phân tích
+  reports.py         -- 📑 tổng hợp tuần, delta vs tuần trước, heatmap chủ đề × ngày, xuất báo cáo
+  chat_tutor.py      -- 🎓 chat với AI Tutor (upload file riêng, nguồn trích dẫn)
+ui_common.py         -- helper dùng chung: load data, gom TUẦN, báo cáo tuần, cache AI, điểm rủi ro
 data_prep.py         -- đọc CSV chatlog, ghép cặp hỏi-đáp, group theo ngày (giờ VN)   [không AI]
 transcript_index.py  -- index BM25 trên 700 đoạn transcript                           [không AI]
 signals.py           -- gắn tín hiệu vướng mắc rule-based, 3 nhóm                     [không AI]
 classify_friction.py -- gom cụm (Python) + AI đặt tên/lý do/gợi ý (LỜI GỌI AI CHÍNH)  [AI thật]
-agent_tutor.py       -- AI Tutor demo, ReAct/tool-calling, tool search_transcript     [AI thật]
+agent_tutor.py       -- AI Tutor demo, ReAct/tool-calling + GROUNDING GUARD chống bịa [AI thật]
 upload_index.py      -- đọc PDF/PPTX/TXT/MD upload, chia trang/slide thành index      [không AI]
 llm_client.py        -- client Groq dùng chung, đọc GROQ_API_KEY từ .env, tự retry    [hạ tầng]
-dashboard.py         -- bản dashboard chạy độc lập (demo tách màn hình khi cần)
-agent_demo_ui.py     -- bản chat tutor chạy độc lập (demo tách màn hình khi cần)
-results/             -- cache kết quả AI phân tích theo ngày (gitignore)
+dashboard.py         -- bản dashboard 1 file cũ, chạy độc lập (backup demo)
+agent_demo_ui.py     -- bản chat tutor cũ, chạy độc lập (backup demo)
+results/             -- cache kết quả AI phân tích theo ngày/tuần (gitignore)
 .streamlit/          -- theme (2 chế độ sáng/tối, màu chủ đạo indigo)
 ```
 
