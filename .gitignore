@@ -1,7 +1,16 @@
 .DS_Store
 node_modules/
 *.env
+<<<<<<< HEAD
 .claude/
 .agents/
 __pycache__/
 .venv
+=======
+codebase/results/
+codebase/.venv/
+codebase/__pycache__/
+.venv
+__pycache__/
+data/
+>>>>>>> phuongntn/dev

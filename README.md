@@ -1,5 +1,20 @@
 # Mini Hackathon AI — Batch 03
 
+## Nhóm K3 — Bản đồ Vướng Mắc Lớp (Hướng A · VLearn)
+
+| Thành viên | Mã HV | Phân công |
+|---|---|---|
+| Phạm Mai Anh | 2A202601681 | Evidence/mining — xử lý dữ liệu có sẵn, phân tích chatlog |
+| Trần Thị Hoa Mai | 2A202601317 | Frontend Streamlit + deploy |
+| Cao Quế Phương | 2A202601111 | Build pipeline phân loại + tích hợp |
+| Lương Thị Linh | 2A202601015 | Slide + kịch bản phỏng vấn validation + phỏng vấn |
+| Ngô Thị Ngọc Phượng | 2A202601569 | Kiểm thử (golden set, `eval/`) + tối ưu |
+
+Sản phẩm: `spec.md` · `codebase/` (chạy `streamlit run codebase/app.py`) · `eval/` ·
+`validation/` · `reflection/`.
+
+---
+
 **SPEC → Prototype → Demo.** Đây không phải cuộc thi code — đây là cuộc thi **tư duy sản phẩm AI**.
 
 - Thời lượng: **1,5 ngày** (một ngày build + một buổi demo)

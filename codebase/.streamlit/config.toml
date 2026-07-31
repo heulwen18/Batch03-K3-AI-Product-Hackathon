@@ -1,0 +1,28 @@
+# Theme VLearn — màu chủ đạo indigo khớp accent rgba(120,120,255) đã dùng trong header các tab.
+# Định nghĩa cả [theme.light] và [theme.dark] để người dùng vẫn tự chuyển sáng/tối trong Settings.
+
+[theme]
+font = "Inter, sans-serif"
+baseRadius = "0.75rem"
+
+[theme.light]
+primaryColor = "#4f46e5"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f4f4fb"
+textColor = "#1e1b2e"
+linkColor = "#4f46e5"
+borderColor = "#e2e0f0"
+
+[theme.light.sidebar]
+backgroundColor = "#f4f4fb"
+
+[theme.dark]
+primaryColor = "#818cf8"
+backgroundColor = "#0e1117"
+secondaryBackgroundColor = "#1a1d29"
+textColor = "#e6e6f0"
+linkColor = "#a5b4fc"
+borderColor = "#2c3040"
+
+[theme.dark.sidebar]
+backgroundColor = "#131722"
